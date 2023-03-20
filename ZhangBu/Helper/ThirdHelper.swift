@@ -8,6 +8,24 @@
 import Foundation
 
 extension Date {
+//    // 下面三个public增加AppStorage对Date的支持
+//    public typealias RawValue = String
+//    public init?(rawValue: RawValue) {
+//        guard let data = rawValue.data(using: .utf8),
+//              let date = try? JSONDecoder().decode(Date.self, from: data) else {
+//            return nil
+//        }
+//        self = date
+//    }
+//
+//    public var rawValue: RawValue{
+//        guard let data = try? JSONEncoder().encode(self),
+//              let result = String(data:data,encoding: .utf8) else {
+//            return ""
+//        }
+//       return result
+//    }
+    
     var isFirstMonthOfQuarter: Bool {
         Calendar.current.component(.month, from: self) % 3 == 1
     }
@@ -25,6 +43,14 @@ extension Date {
     }
     var dayInMonth: Int {
         Calendar.current.component(.day, from: self)
+    }
+    
+    var hour: Int {
+        Calendar.current.component(.hour, from: self)
+    }
+    
+    var minute: Int {
+        Calendar.current.component(.minute, from: self)
     }
     
     func isEqual(to date: Date, toGranularity component: Calendar.Component, in calendar: Calendar = .current) -> Bool {

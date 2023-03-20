@@ -49,6 +49,7 @@ struct ContentView: View {
     @State var item = ""
     
     
+    // 显示通知界面
     @State private var showSettingView = false
     
     
@@ -107,7 +108,7 @@ struct ContentView: View {
                         }
                     }
                     .sheet(isPresented: $showSettingView, content: {
-                        SettingView(isUnlocked: $isUnlocked)
+                        SettingView(isUnlocked: $isUnlocked, todayPrice: todayPrice)
                     })
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -219,6 +220,16 @@ extension ContentView {
         return yearCosts
     }
     
+    var todayPrice: Double {
+        if let _ = processedDayAccounts[StaticProperty.MySelfName] {
+            if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
+                return tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+            }
+        }
+        
+        return 0.0
+    }
+    
     func removeRecord(by name: String, and date: Date, for record: Record) {
         processedDayAccounts[name]![date]!.removeFromRecords(record)
         
@@ -234,6 +245,7 @@ extension ContentView {
         }
     }
     
+    // face id解锁过程
     func authenticate() {
         let context = LAContext()
         var error: NSError?
@@ -255,6 +267,9 @@ extension ContentView {
             self.isUnlocked = false
         }
     }
+    
+    // 设置通知
+    // 在每天一定时候设置通知提醒，提醒今日已经消费，然后记录今天未记录的。当然还需要放入后面天的通知，因为避免后面天不打开app。
 }
 
 

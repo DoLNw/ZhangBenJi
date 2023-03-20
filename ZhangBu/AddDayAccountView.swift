@@ -27,6 +27,14 @@ struct AddDayAccountView: View {
     @State var supriseFullName: String?
     @State var showSuprise = false
     
+    
+    // 对应通知的权限，每一次添加或者修改消费之后，需要更新通知
+    @AppStorage(StaticProperty.USERFEFAULTS_SHOULDDAILYREPORT) var shouldDailyReport = false
+    // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
+    @AppStorage(StaticProperty.USERFEFAULTS_DailyReportTime) var savedDailyReportTime = 0.0
+    // 通知时间，是否已经设置通知闹钟
+    @AppStorage(StaticProperty.USERFEFAULTS_AlreadySettingReport) var alreadySettingReport = false
+    
     var processedDayAccounts: [String: [Date: DayAccount]]
     let personalInfo: PersonalInfo
     
@@ -53,8 +61,6 @@ struct AddDayAccountView: View {
                             self.removeRecord(dayAccount: tempEditAccount, for: tempEditRecord)
                             
                             self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate)
-                            
-                            
                         } else {
                             self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount)
                         }
@@ -63,6 +69,18 @@ struct AddDayAccountView: View {
                         item = ""
                         editAccount = nil
                         editRecord = nil
+                        
+                        // 如果添加或者修改了今天的消费，那么需要修改通知
+                        if currentSelectedDate.isInToday {
+                            var todayPrice = 0.0
+                            if let _ = processedDayAccounts[StaticProperty.MySelfName] {
+                                if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
+                                    todayPrice = tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+                                }
+                            }
+                            
+                            alreadySettingReport = NotificationHelper.editNotification(savedDailyReportTime: savedDailyReportTime, todayPrice: todayPrice)
+                        }
                     }
                     
                     focusedField = nil
@@ -76,7 +94,6 @@ struct AddDayAccountView: View {
                             .font(.title)
 //                            .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .leading, endPoint: .trailing))
                     }
-                    
                 }
             }
             .onSubmit {
@@ -107,6 +124,19 @@ struct AddDayAccountView: View {
                         item = ""
                         editAccount = nil
                         editRecord = nil
+                        
+                        // 如果添加或者修改了今天的消费，那么需要修改通知
+                        // 如果添加或者修改了今天的消费，那么需要修改通知
+                        if currentSelectedDate.isInToday {
+                            var todayPrice = 0.0
+                            if let _ = processedDayAccounts[StaticProperty.MySelfName] {
+                                if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
+                                    todayPrice = tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+                                }
+                            }
+                            
+                            alreadySettingReport = NotificationHelper.editNotification(savedDailyReportTime: savedDailyReportTime, todayPrice: todayPrice)
+                        }
                     }
                     
                     focusedField = nil
@@ -239,41 +269,4 @@ extension AddDayAccountView {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
-    
-    
-    
-//    func editRecord(remove dayAccount: DayAccount, for record: Record, by name: String, and newDate: Date, with newItem: String, newPrice: Double) {
-//        dayAccount.removeFromRecords(record)
-//
-//        if newDate != dayAccount.wrappedDate && dayAccount.wrappedRecords.count == 0 {
-//            viewContext.delete(dayAccount)
-//
-//            let newDayAccount = DayAccount(context: viewContext)
-//            newDayAccount.id = UUID()
-//            newDayAccount.date = newDate
-//            newDayAccount.name = name
-//
-//            let record = Record(context: viewContext)
-//            record.belongDayAccount = newDayAccount
-//            record.createDate = record.createDate  // 修改的话，createdDate不变
-//            record.id = UUID()
-//            record.price = newPrice
-//            record.item = newItem
-//        } else if newDate != dayAccount.wrappedDate {
-//            let record = Record(context: viewContext)
-//            record.id = UUID()
-//            record.createDate = record.createDate  // 修改的话，createdDate不变
-//            record.item = newItem
-//            record.price = newPrice
-//        }
-//
-//
-//
-//        do {
-//            try viewContext.save()
-//        } catch {
-//            let nsError = error as NSError
-//            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//        }
-//    }
 }

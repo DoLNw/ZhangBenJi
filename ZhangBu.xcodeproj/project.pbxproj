@@ -26,16 +26,17 @@
 		9D5A93A029BF532000EF4747 /* AccountsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5A939F29BF532000EF4747 /* AccountsChart.swift */; };
 		9D5A93A429C20FB500EF4747 /* SpirographView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5A93A329C20FB500EF4747 /* SpirographView.swift */; };
 		9D5A93A829C2111900EF4747 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5A93A729C2111900EF4747 /* SettingView.swift */; };
+		9D78C76029C70BEC00B84A5C /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C75F29C70BEC00B84A5C /* NotificationHelper.swift */; };
 		9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA4EB1429C3470B003DB3BF /* ICONView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9D2D08D129C445E700E6404C /* MyNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNavigation.swift; sourceTree = "<group>"; };
-		9D2D08D329C44A8600E6404C /* ThirdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdHelper.swift; sourceTree = SOURCE_ROOT; };
-		9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DayAccount+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
-		9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DayAccount+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
-		9D2D08D729C44AB300E6404C /* Record+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
-		9D2D08D829C44AB300E6404C /* Record+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Record+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		9D2D08D329C44A8600E6404C /* ThirdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThirdHelper.swift; path = ZhangBu/Helper/ThirdHelper.swift; sourceTree = SOURCE_ROOT; };
+		9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DayAccount+CoreDataClass.swift"; path = "ZhangBu/CoreData/DayAccount+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DayAccount+CoreDataProperties.swift"; path = "ZhangBu/CoreData/DayAccount+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		9D2D08D729C44AB300E6404C /* Record+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Record+CoreDataClass.swift"; path = "ZhangBu/CoreData/Record+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		9D2D08D829C44AB300E6404C /* Record+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Record+CoreDataProperties.swift"; path = "ZhangBu/CoreData/Record+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		9D5A936429BE1B4600EF4747 /* ZhangBu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZhangBu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D5A936729BE1B4600EF4747 /* ZhangBuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZhangBuApp.swift; sourceTree = "<group>"; };
 		9D5A936929BE1B4700EF4747 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,6 +53,7 @@
 		9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZhangBu.entitlements; sourceTree = "<group>"; };
 		9D5A93A329C20FB500EF4747 /* SpirographView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpirographView.swift; sourceTree = "<group>"; };
 		9D5A93A729C2111900EF4747 /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		9D78C75F29C70BEC00B84A5C /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		9DA4EB1429C3470B003DB3BF /* ICONView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICONView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9D2D08DD29C4925B00E6404C /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */,
+				9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */,
+				9D2D08D729C44AB300E6404C /* Record+CoreDataClass.swift */,
+				9D2D08D829C44AB300E6404C /* Record+CoreDataProperties.swift */,
+				9D5A939729BE271800EF4747 /* PersonalInfo.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		9D2D08DE29C4927700E6404C /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				9D2D08D129C445E700E6404C /* MyNavigation.swift */,
+				9D2D08D329C44A8600E6404C /* ThirdHelper.swift */,
+				9DA4EB1429C3470B003DB3BF /* ICONView.swift */,
+				9D5A939529BE26C600EF4747 /* StaticProperty.swift */,
+				9D78C75F29C70BEC00B84A5C /* NotificationHelper.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		9D5A935B29BE1B4600EF4747 = {
 			isa = PBXGroup;
 			children = (
@@ -85,25 +111,18 @@
 		9D5A936629BE1B4600EF4747 /* ZhangBu */ = {
 			isa = PBXGroup;
 			children = (
-				9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */,
-				9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */,
-				9D2D08D729C44AB300E6404C /* Record+CoreDataClass.swift */,
-				9D2D08D829C44AB300E6404C /* Record+CoreDataProperties.swift */,
-				9D2D08D329C44A8600E6404C /* ThirdHelper.swift */,
-				9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */,
-				9D5A939529BE26C600EF4747 /* StaticProperty.swift */,
-				9D5A939B29BF1F1000EF4747 /* AccountsList.swift */,
 				9D5A936729BE1B4600EF4747 /* ZhangBuApp.swift */,
-				9DA4EB1429C3470B003DB3BF /* ICONView.swift */,
+				9D5A937029BE1B4700EF4747 /* Persistence.swift */,
+				9D2D08DE29C4927700E6404C /* Helper */,
+				9D2D08DD29C4925B00E6404C /* CoreData */,
+				9D5A939B29BF1F1000EF4747 /* AccountsList.swift */,
 				9D5A939929BEC56900EF4747 /* AddDayAccountView.swift */,
 				9D5A93A729C2111900EF4747 /* SettingView.swift */,
 				9D5A939F29BF532000EF4747 /* AccountsChart.swift */,
 				9D5A936929BE1B4700EF4747 /* ContentView.swift */,
-				9D2D08D129C445E700E6404C /* MyNavigation.swift */,
-				9D5A939729BE271800EF4747 /* PersonalInfo.swift */,
 				9D5A93A329C20FB500EF4747 /* SpirographView.swift */,
 				9D5A936B29BE1B4700EF4747 /* Assets.xcassets */,
-				9D5A937029BE1B4700EF4747 /* Persistence.swift */,
+				9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */,
 				9D5A937529BE1B4700EF4747 /* Info.plist */,
 				9D5A937229BE1B4700EF4747 /* ZhangBu.xcdatamodeld */,
 				9D5A936D29BE1B4700EF4747 /* Preview Content */,
@@ -205,6 +224,7 @@
 				9D5A936829BE1B4600EF4747 /* ZhangBuApp.swift in Sources */,
 				9D5A939829BE271800EF4747 /* PersonalInfo.swift in Sources */,
 				9D2D08D229C445E700E6404C /* MyNavigation.swift in Sources */,
+				9D78C76029C70BEC00B84A5C /* NotificationHelper.swift in Sources */,
 				9D5A939629BE26C600EF4747 /* StaticProperty.swift in Sources */,
 				9D5A937429BE1B4700EF4747 /* ZhangBu.xcdatamodeld in Sources */,
 			);
@@ -263,7 +283,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -317,7 +337,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

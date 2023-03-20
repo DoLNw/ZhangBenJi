@@ -210,7 +210,6 @@ struct AccountsChart: View {
                                         Text("\(cost, specifier: "%.2F")")
                                             .font(.footnote)
                                     }
-                                    
                             }
                         }
                     }

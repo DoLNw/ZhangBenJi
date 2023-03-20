@@ -10,6 +10,9 @@ import SwiftUI
 struct AccountsList: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
+    @AppStorage(StaticProperty.USERFEFAULTS_DailyReportTime) var savedDailyReportTime = 0.0
+    
     // 为了可以给record修改，要贯穿AccountList和AddDayAccountView两个，需要一些东西串联
     @FocusState var focusedField: FocusedField?
     @Binding var editAccount: DayAccount? // 有值代表是正在edit界面
@@ -88,7 +91,7 @@ struct AccountsList: View {
                     Text("日消费：¥0.00").bold()
                         .foregroundColor(.accentColor)
                 }
-                                
+            
             case .weekSeg:
                 Text("第\(currentSelectedDate.weekInMonth)周消费：¥\(weekCost, specifier: "%.2F")").bold()
                     .foregroundColor(.accentColor)
@@ -165,6 +168,11 @@ struct AccountsList: View {
                             withAnimation {
                                 let _ = offsets.map { dayAccount.wrappedRecords[$0] }.forEach { record in
                                     self.removeRecord(dayAccount: dayAccount, for: record)
+                                    if dayAccount.wrappedDate.isInToday {
+                                        // 此处计算时间的时候，可能dayAccount已经被remove了，但是能计算出0，不影响
+                                        let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +))
+                                        print("asdas\(dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +))")
+                                    }
                                 }
                             }
                         }
@@ -180,7 +188,6 @@ struct AccountsList: View {
 //                                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.orange, .red]), startPoint: .leading, endPoint: .trailing))
                                 .foregroundColor(.accentColor)
                         }
-                        
                     }
                     .listRowSeparatorTint(Color.accentColor)
 
