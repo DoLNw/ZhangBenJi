@@ -16,5 +16,8 @@ class StaticProperty {
     static let USERFEFAULTS_DailyReportTime = "dailyReportTime"
     
     static let USERFEFAULTS_AlreadySettingReport = "alreadySettingReport"
+    
+    static let USERFEFAULTS_CHARTORLIST = "ChartOrList"
+    static let USERFEFAULTS_SegmentationSelection = "SegmentationSelection"
 }
 

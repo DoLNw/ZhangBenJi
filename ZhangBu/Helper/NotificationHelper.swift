@@ -8,6 +8,14 @@
 import Foundation
 import NotificationCenter
 
+// 因为通知涉及金额，
+// 1、所以需要在AccountList中删除的时候重新设置通知，
+// 2、AddDayAccountView中添加还有修改的时候重新设置通知，
+// 3、然后就是SettingView开启通知的时候设置
+
+// 设置通知
+// 在每天一定时候设置通知提醒，提醒今日已经消费，然后记录今天未记录的。当然还需要放入后面天的通知，因为避免后面天不打开app。
+// shouldRepeat为false，为今天的通知；shouldRepeat为true，是后面天的通知
 class NotificationHelper {
     static func editNotification(savedDailyReportTime: Double, todayPrice: Double) -> Bool {
         let dailyReportTime = Date(timeIntervalSinceReferenceDate: savedDailyReportTime)
@@ -23,10 +31,6 @@ class NotificationHelper {
         return noti1 && noti2
     }
     
-    
-    // 设置通知
-    // 在每天一定时候设置通知提醒，提醒今日已经消费，然后记录今天未记录的。当然还需要放入后面天的通知，因为避免后面天不打开app。
-    // shouldRepeat为false，为今天的通知；shouldRepeat为true，是后面天的通知
     static private func addNotificationRequest(reportDate: Date, price: Double, shouldRepeat: Bool) -> Bool {
         let notificationCenter = UNUserNotificationCenter.current()
         

@@ -14,13 +14,15 @@ struct EditRecordTagView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.editMode) var editMode
     
-    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
+    
+    // DayAccount中每一个Record会有一个RecordTag
+    // 而我这里从tag入手，先拿到所有的tag
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
         animation: .default)
     var tags: FetchedResults<RecordTag>
     
-    @State var tagNames = [String]()
+
     
     var body: some View {
         Form {
@@ -96,17 +98,6 @@ struct EditRecordTagView: View {
                 }
             }
         }
-        .onAppear {
-            for tag in tags {
-                tagNames.append(tag.wrappedTagName)
-            }
-        }
-    }
-    
-    func debugPrintTagCreatedDate() {
-        for tag in tags {
-            print("\(tag.wrappedTagName): \(tag.wrappedcreatdDate.description)")
-        }
     }
     
     func addNewTag() {
@@ -116,7 +107,6 @@ struct EditRecordTagView: View {
         newTag.tagName = "默认"
         newTag.createdDate = Date()
         
-//        newTag.addToRecords()  // 此处只是添加一个新的标签
         viewContextSave()
     }
     
@@ -126,6 +116,12 @@ struct EditRecordTagView: View {
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    func debugPrintTagCreatedDate() {
+        for tag in tags {
+            print("\(tag.wrappedTagName): \(tag.wrappedcreatdDate.description)")
         }
     }
 }

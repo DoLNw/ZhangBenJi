@@ -8,6 +8,9 @@
 // 自定义实现图表，以及Swift官方图表库使用案例
 // https://blog.logrocket.com/building-custom-charts-swiftui/
 
+// 此处表格，互动表格，柱状图，折线图等等都使用了
+
+
 import SwiftUI
 import Charts
 
@@ -15,24 +18,14 @@ import Charts
 struct AccountsChart: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
         animation: .default)
     var dayAccounts: FetchedResults<DayAccount>
     
-    @State var showItemEditOrBar: Bool = true
-    
-    var segmentationSelection: SegmentationEnum
-    var currentSelectedDate: Date
-    
     var processedDayAccounts: [String: [Date: DayAccount]]
     var yearCosts: [Int: [String: [String: Double]]]
-    
-//    @State var selectedItemName: String?
-//    @State var selectedDayAccount: DayAccount?
-    
-    @State var selectedDate: Date?
-    
     var weekCost: Double {
         var weekCost = 0.0
         
@@ -48,6 +41,20 @@ struct AccountsChart: View {
     }
     
     
+    
+    // 日、周、月、年
+    var segmentationSelection: SegmentationEnum
+    // 当前DatePicker选择的date
+    var currentSelectedDate: Date
+    
+    
+    
+    // 给互动图表的时候使用，触摸了之后选择了改日期的数据，那么进行展示
+    @State var selectedDate: Date?
+    
+    
+    
+    
     init(segmentationSelection: SegmentationEnum, currentSelectedDate: Date, selectedItemName: String? = nil, processedDayAccounts: [String: [Date: DayAccount]], yearCosts: [Int: [String: [String: Double]]]) {
         self.segmentationSelection = segmentationSelection
         self.currentSelectedDate = currentSelectedDate
@@ -56,6 +63,9 @@ struct AccountsChart: View {
         self.yearCosts = yearCosts
     }
     
+    
+    
+    // 本来想的是给不同的用户，不同的线条颜色
     var gradients: [String: LinearGradient] {
         var gradients = [String: LinearGradient]()
         for (index, name) in processedDayAccounts.keys.sorted(by: {$0 < $1}).enumerated() {
@@ -94,16 +104,7 @@ struct AccountsChart: View {
                                 .foregroundStyle(gradients[StaticProperty.MySelfName]!)
                                 .foregroundStyle(by:.value("item", StaticProperty.MySelfName))
                         }
-//                        if let selectedItemName = selectedItemName {
-//                            RuleMark(x: .value("Selected item", selectedItemName))
-//                                .annotation(position: .top, alignment: .top) {
-//                                    VStack {
-//                                        Text("\(tempDayAccount.records[selectedItemName] ?? 0.0, specifier: "%.2F")")
-//                                    }
-//                                }
-//                        }
                     }
-//                    .chartForegroundStyleScale([StaticProperty.MySelfName: Color.accentColor])  // 这个是控制legend的图表颜色的
                     .chartLegend(.hidden)
                     .chartYAxis {
                         AxisMarks(position: .leading) {
@@ -122,6 +123,7 @@ struct AccountsChart: View {
                         .foregroundColor(.accentColor)
                 }
 
+                    
             case .weekSeg:
                 Text("第\(currentSelectedDate.weekInMonth)周消费：¥\(weekCost, specifier: "%.2F")").bold()
                     .foregroundColor(.accentColor)
@@ -140,8 +142,6 @@ struct AccountsChart: View {
                                 .symbol(by: .value("Account Day",  data.key))
                                 .symbolSize(dateAndDayAccount.key.isInSameDay(as: currentSelectedDate) ? 250 : 100)
                                 .interpolationMethod(.catmullRom)
-    //                            .foregroundStyle(gradients[StaticProperty.MySelfName]!)
-    //                            .foregroundStyle(Color.accentColor)
                                 .foregroundStyle(by:.value("Name", StaticProperty.MySelfName))
                                 
                             AreaMark(
@@ -177,6 +177,8 @@ struct AccountsChart: View {
                         AxisValueLabel(format: .dateTime.day().weekday(), centered: true)
                     }
                 }
+                    
+                    
             case .monthSeg:
                 let currentMonthCost = yearCosts[currentSelectedDate.year]?[StaticProperty.MySelfName]?[String(currentSelectedDate.monthInYear)] ?? 0.0
 
@@ -194,9 +196,6 @@ struct AccountsChart: View {
                             LineMark(x: .value("Account Day", dateAndDayAccount.key, unit: .day), y: .value("Value", cost))
                                 .symbol(by: .value("Account Day",  data.key))
                                 .symbolSize(currentSelectedDate.isInSameDay(as: dateAndDayAccount.key) ? 250 : 100)
-//                                .interpolationMethod(.catmullRom)
-//                                .foregroundStyle(gradients[StaticProperty.MySelfName]!)
-//                                .foregroundStyle(Color.accentColor)
                                 .foregroundStyle(by:.value("Name", StaticProperty.MySelfName))
                             
                             if let selectedDate = selectedDate, selectedDate.isInSameDay(as: dateAndDayAccount.key) {
@@ -222,13 +221,6 @@ struct AccountsChart: View {
                     }
                 }
                 .chartXAxis {
-//                    AxisMarks(values: .stride(by: .day)) { value in
-//                        if value.as(Date.self)!.isFirstDayOfWeek {
-//                            AxisGridLine(centered: false, stroke: StrokeStyle(dash: [2.5])).foregroundStyle(Color.accentColor)
-//                            AxisValueLabel(format: .dateTime.day(), centered: true)
-//                        }
-//                    }
-                    
                     AxisMarks(values: .stride(by: .day)) { value in
                         AxisGridLine(centered: false, stroke: StrokeStyle(dash: [2.5]))
                             .foregroundStyle(Color.accentColor)
@@ -275,6 +267,7 @@ struct AccountsChart: View {
                     }
                 }
 
+                    
             case .yearSeg:
                 let currentYearCost = yearCosts[currentSelectedDate.year] ?? [String: [String: Double]]()
 
@@ -298,8 +291,6 @@ struct AccountsChart: View {
 //                            }
                             .symbolSize((Int(monthAndDayAccount.key)! == currentSelectedDate.monthInYear) ? 250 : 100)
                             .interpolationMethod(.catmullRom)
-//                            .foregroundStyle(gradients[StaticProperty.MySelfName]!)
-//                            .foregroundStyle(Color.accentColor)
                             .foregroundStyle(by:.value("Name", StaticProperty.MySelfName))
                     }
                 }
@@ -329,4 +320,5 @@ struct AccountsChart: View {
         }
     }
 }
+    
 

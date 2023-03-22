@@ -32,6 +32,7 @@
 		9D78C77229C892A000B84A5C /* RecordTag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C77029C892A000B84A5C /* RecordTag+CoreDataProperties.swift */; };
 		9D78C77429C8A44400B84A5C /* EditRecordTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */; };
 		9D78C77829C9E37C00B84A5C /* EditRecordTagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */; };
+		9D8A5FBD29CB45790037F8F3 /* SomeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */; };
 		9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA4EB1429C3470B003DB3BF /* ICONView.swift */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 		9D78C77029C892A000B84A5C /* RecordTag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecordTag+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecordTagView.swift; sourceTree = "<group>"; };
 		9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditRecordTagDetailView.swift; sourceTree = "<group>"; };
+		9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SomeClass.swift; sourceTree = "<group>"; };
 		9DA4EB1429C3470B003DB3BF /* ICONView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICONView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,7 +89,6 @@
 				9D78C76A29C8899900B84A5C /* Record+CoreDataProperties.swift */,
 				9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */,
 				9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */,
-				9D5A939729BE271800EF4747 /* PersonalInfo.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -96,11 +97,9 @@
 			isa = PBXGroup;
 			children = (
 				9D78C76D29C88C8000B84A5C /* Color+Codable.swift */,
-				9D2D08D129C445E700E6404C /* MyNavigation.swift */,
-				9D2D08D329C44A8600E6404C /* ThirdHelper.swift */,
 				9DA4EB1429C3470B003DB3BF /* ICONView.swift */,
-				9D5A939529BE26C600EF4747 /* StaticProperty.swift */,
 				9D78C75F29C70BEC00B84A5C /* NotificationHelper.swift */,
+				9D2D08D329C44A8600E6404C /* ThirdHelper.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -126,16 +125,14 @@
 			children = (
 				9D5A936729BE1B4600EF4747 /* ZhangBuApp.swift */,
 				9D5A937029BE1B4700EF4747 /* Persistence.swift */,
+				9D8A5FC029CB48E50037F8F3 /* Widgets */,
 				9D2D08DE29C4927700E6404C /* Helper */,
 				9D2D08DD29C4925B00E6404C /* CoreData */,
-				9D5A939B29BF1F1000EF4747 /* AccountsList.swift */,
-				9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */,
+				9D8A5FBE29CB46260037F8F3 /* ListAndChart */,
+				9D8A5FB929CB443F0037F8F3 /* EditTagView */,
 				9D5A939929BEC56900EF4747 /* AddDayAccountView.swift */,
-				9D5A93A729C2111900EF4747 /* SettingView.swift */,
-				9D5A939F29BF532000EF4747 /* AccountsChart.swift */,
 				9D5A936929BE1B4700EF4747 /* ContentView.swift */,
-				9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */,
-				9D5A93A329C20FB500EF4747 /* SpirographView.swift */,
+				9D5A93A729C2111900EF4747 /* SettingView.swift */,
 				9D5A936B29BE1B4700EF4747 /* Assets.xcassets */,
 				9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */,
 				9D5A937529BE1B4700EF4747 /* Info.plist */,
@@ -151,6 +148,36 @@
 				9D5A936E29BE1B4700EF4747 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		9D8A5FB929CB443F0037F8F3 /* EditTagView */ = {
+			isa = PBXGroup;
+			children = (
+				9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */,
+				9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */,
+			);
+			path = EditTagView;
+			sourceTree = "<group>";
+		};
+		9D8A5FBE29CB46260037F8F3 /* ListAndChart */ = {
+			isa = PBXGroup;
+			children = (
+				9D5A939F29BF532000EF4747 /* AccountsChart.swift */,
+				9D5A939B29BF1F1000EF4747 /* AccountsList.swift */,
+			);
+			path = ListAndChart;
+			sourceTree = "<group>";
+		};
+		9D8A5FC029CB48E50037F8F3 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				9D5A939729BE271800EF4747 /* PersonalInfo.swift */,
+				9D5A93A329C20FB500EF4747 /* SpirographView.swift */,
+				9D2D08D129C445E700E6404C /* MyNavigation.swift */,
+				9D5A939529BE26C600EF4747 /* StaticProperty.swift */,
+				9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */,
+			);
+			path = Widgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,6 +262,7 @@
 				9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */,
 				9D78C77429C8A44400B84A5C /* EditRecordTagView.swift in Sources */,
 				9D78C77229C892A000B84A5C /* RecordTag+CoreDataProperties.swift in Sources */,
+				9D8A5FBD29CB45790037F8F3 /* SomeClass.swift in Sources */,
 				9D5A936A29BE1B4700EF4747 /* ContentView.swift in Sources */,
 				9D5A93A829C2111900EF4747 /* SettingView.swift in Sources */,
 				9D78C76C29C8899900B84A5C /* Record+CoreDataProperties.swift in Sources */,
@@ -380,6 +408,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ZhangBu/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "账本记";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "请求使用Face ID解锁此app！";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -417,6 +447,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ZhangBu/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "账本记";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "请求使用Face ID解锁此app！";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

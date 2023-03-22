@@ -8,6 +8,9 @@
 import Foundation
 import SwiftUI
 
+// 此处使用的是，Color能够Core Data中通过String实现存储。
+
+
 // 为了Codable
 #if os(iOS)
 import UIKit

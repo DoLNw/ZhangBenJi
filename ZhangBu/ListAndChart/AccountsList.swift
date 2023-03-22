@@ -5,48 +5,52 @@
 //  Created by Jcwang on 2023/3/11.
 //
 
+
+// 此处是显示List界面的UI，根据segment来分隔。
+
+
 import SwiftUI
 
 struct AccountsList: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    
+    
     // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
     @AppStorage(StaticProperty.USERFEFAULTS_DailyReportTime) var savedDailyReportTime = 0.0
+    
+    
     
     // 为了可以给record修改，要贯穿AccountList和AddDayAccountView两个，需要一些东西串联
     @FocusState var focusedField: FocusedField?
     @Binding var editAccount: DayAccount? // 有值代表是正在edit界面
     @Binding var editRecord: Record?
-    
-    @Binding var date: Date
+    // 修改时，金额和物品名称
     @Binding var amount: Double?
     @Binding var item: String
     // 修改时，标签也要改变
     @Binding var currentRecordTag: RecordTag?
     
-    @State var showItemEditOrBar: Bool = true
     
-    var segmentationSelection: SegmentationEnum
+    // 修改时，当前时间要变成那个record的时间。然后显示界面，显示currentSelectedDate相关日、周、月、年的相关金额
     @Binding  var currentSelectedDate: Date
     
     
+    // 选择，选择查看的是日、周、月、年
+    var segmentationSelection: SegmentationEnum
     
+    
+    
+    // DayAccounts和他有关的计算属性processedDayAccounts和yearCosts。
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
         animation: .default)
     var dayAccounts: FetchedResults<DayAccount>
     
+    // 名字，日期，DayAccount
     var processedDayAccounts: [String: [Date: DayAccount]]
+    // 年份，姓名，月份，该月份总和
     var yearCosts: [Int: [String: [String: Double]]]
-    
-    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
-        animation: .default)
-    var tags: FetchedResults<RecordTag>
-    
-    
-    
     var weekCost: Double {
         var weekCost = 0.0
         
@@ -62,16 +66,18 @@ struct AccountsList: View {
     }
     
     
-//    init(focusedField: FocusedField?, segmentationSelection: SegmentationEnum, currentSelectedDate: Date, selectedItemName: String? = nil, processedDayAccounts: [String: [Date: DayAccount]], yearCosts: [Int: [String: [String: Double]]]) {
-//        self.focusedField = focusedField
-//        
-//        self.segmentationSelection = segmentationSelection
-//        self.currentSelectedDate = currentSelectedDate
-//
-//        self.processedDayAccounts = processedDayAccounts
-//        self.yearCosts = yearCosts
-//    }
     
+    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
+    // 修改时，如果没有标签，那么默认第一个标签
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
+        animation: .default)
+    var tags: FetchedResults<RecordTag>
+    
+    
+    
+    
+    // 本来想的是给不同的用户，不同的线条颜色
     var gradients: [String: LinearGradient] {
         var gradients = [String: LinearGradient]()
         for (index, name) in processedDayAccounts.keys.sorted(by: {$0 < $1}).enumerated() {
@@ -87,6 +93,8 @@ struct AccountsList: View {
         
         return gradients
     }
+    
+    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -199,12 +207,10 @@ struct AccountsList: View {
                     } header: {
                         if currentSelectedDate.isInSameDay(as: dayAccount.wrappedDate) {
                             Text("\(segmentationSelection == .yearSeg ? "\(dayAccount.wrappedDate.monthInYear)月" : "")\(dayAccount.wrappedDate.dayInMonth)号（当前）")
-//                                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.orange, .red]), startPoint: .leading, endPoint: .trailing))
                                 .font(.title2)
                                 .foregroundColor(.accentColor)
                         } else {
                             Text("\(segmentationSelection == .yearSeg ? "\(dayAccount.wrappedDate.monthInYear)月" : "")\(dayAccount.wrappedDate.dayInMonth)号")
-//                                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.orange, .red]), startPoint: .leading, endPoint: .trailing))
                                 .foregroundColor(.accentColor)
                         }
                     }
@@ -219,7 +225,6 @@ struct AccountsList: View {
 
 extension AccountsList {
     func removeRecord(dayAccount: DayAccount, for record: Record) {
-        //        objectWillChange.send()
         dayAccount.removeFromRecords(record)
         
         if dayAccount.wrappedRecords.count == 0 {

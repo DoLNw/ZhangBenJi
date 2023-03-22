@@ -5,8 +5,13 @@
 //  Created by Jcwang on 2023/3/2.
 //
 
+
+// 增加，或者修改的界面
+// 修改的话，是AccountList传过来的Binding数据，有数据的话代表是修改
+
+
 import SwiftUI
-private var supriseString = ["诚妈": "周林芬", "忠忠": "王建忠", "王嘉诚": "王嘉诚", "杰哥": "沈杰", "翔哥": "王瀚翔", "苏航": "苏航", "VIGA": "王佳维", "陈胜": "陈胜", "WTT": "王婷婷", "张姐": "张婉卿", "都哥": "季建都", "新程": "沈新程"]
+
 
 struct AddDayAccountView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,8 +22,11 @@ struct AddDayAccountView: View {
         animation: .default)
     var tags: FetchedResults<RecordTag>
     
-    @Binding var currentRecordTag: RecordTag?
+    
+    // 从这里到下面 显示DatePicker的格式 之前的几个指标都是给添加、修改使用的
+    // 显示修改标签菜单
     @State private var showEditRecordTagView = false
+    @Binding var currentRecordTag: RecordTag?
     
     @Binding var currentSelectedDate: Date
     @Binding var amount: Double?
@@ -28,13 +36,21 @@ struct AddDayAccountView: View {
     @FocusState var focusedField: FocusedField?
     @Binding var editAccount: DayAccount? // 有值代表是正在edit界面
     @Binding var editRecord: Record?
+        
     
-//    var focusedField: FocusState<FocusedField?>.Binding
     
+    
+    // 显示DatePicker的格式
     @State var showFullDatePicker = false
     
+    
+    
+    // 显示彩蛋
     @State var supriseFullName: String?
     @State var showSuprise = false
+    
+    
+    
     
     // 对应通知的权限，每一次添加或者修改消费之后，需要更新通知
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDDAILYREPORT) var shouldDailyReport = false
@@ -43,8 +59,17 @@ struct AddDayAccountView: View {
     // 通知时间，是否已经设置通知闹钟
     @AppStorage(StaticProperty.USERFEFAULTS_AlreadySettingReport) var alreadySettingReport = false
     
+    
+    
+    // 通知的时候显示消费，以及删除的时候判断某一个dayAccount中是否还有record，没有的话需要删除dayAccount
     var processedDayAccounts: [String: [Date: DayAccount]]
+    
+    
+    
+    // 多人共享的时候使用
     let personalInfo: PersonalInfo
+    
+    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -116,11 +141,9 @@ struct AddDayAccountView: View {
                     if let _ = editAccount {
                         Label("", systemImage: "pencil.line")
                             .font(.title)
-//                            .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .leading, endPoint: .trailing))
                     } else {
                         Label("", systemImage: "plus.app.fill")
                             .font(.title)
-//                            .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .leading, endPoint: .trailing))
                     }
                 }
             }
@@ -180,7 +203,6 @@ struct AddDayAccountView: View {
             HStack {
                 Toggle("日历", isOn: $showFullDatePicker.animation())
                     .toggleStyle(.button)
-//                    .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
                     .onChange(of: showFullDatePicker) { newValue in
                         let generator = UISelectionFeedbackGenerator()
                         generator.selectionChanged()

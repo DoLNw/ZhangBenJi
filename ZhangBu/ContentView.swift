@@ -5,69 +5,65 @@
 //  Created by Jcwang on 2023/3/12.
 //
 
+
+// 拆分了一些View：添加修改（AddDayAccountView）、显示（ListAndChart）、然后标签修改View的话单独弹出（EditTagView）
+
+
 import SwiftUI
 import CoreData
 import LocalAuthentication
 
-var fullWidth: CGFloat = UIScreen.main.bounds.width
-var fullHeight: CGFloat = UIScreen.main.bounds.height
-
-enum SegmentationEnum: String, CaseIterable {
-    case daySeg = "日"
-    case weekSeg = "周"
-    case monthSeg = "月"
-    case yearSeg = "年"
-}
-
-enum FocusedField {
-    case itemField, amountField
-}
-
-enum ShowingView: String, Codable, CaseIterable {
-    case accountsList, accountsChart
-    
-    mutating func toggle() {
-        switch self {
-        case .accountsList:
-            self = .accountsChart
-        case .accountsChart:
-            self = .accountsList
-        }
-    }
-}
 
 struct ContentView: View {
     let selectedChangeGenerator = UISelectionFeedbackGenerator()
+    
+    
     @Environment(\.managedObjectContext) private var viewContext
 
+    
+    
     // DayACcount表示每一天的消费
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
         animation: .default)
     var dayAccounts: FetchedResults<DayAccount>
     
+    
+    
     // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
         animation: .default)
     var tags: FetchedResults<RecordTag>
-    @State var currentRecordTag: RecordTag?
+    @State var currentRecordTag: RecordTag?    // 为了修改，需要让currentRecordTag变量联通AccountList和AddDayAccountView
     
+    
+    
+    // 给多人共享使用
     var personalInfo: PersonalInfo = PersonalInfo(name: StaticProperty.MySelfName, createDate: Date())
     
-    @AppStorage("ChartOrList") var chartOrList: ShowingView = .accountsList // true是chart
-    @AppStorage("SegmentationSelection") var segmentationSelection: SegmentationEnum = .weekSeg
-    @State private var isUnlocked = false
+    
+    
+    @AppStorage(StaticProperty.USERFEFAULTS_CHARTORLIST) var chartOrList: ShowingView = .accountsList // true是chart
+    @AppStorage(StaticProperty.USERFEFAULTS_SegmentationSelection) var segmentationSelection: SegmentationEnum = .weekSeg
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDLOCK) var shouldLock = false
+    @State private var isUnlocked = false
 
-    // 为了可以给record修改，要贯穿AccountList和AddDayAccountView两个，需要一些东西串联
+    
+    
+    // 为了可以给record修改，要贯穿AccountList和AddDayAccountView两个，需要一些东西联通AccountList和AddDayAccountView
     @FocusState var focusedField: FocusedField?
     @State var editAccount: DayAccount? // 有值代表是正在edit界面
     @State var editRecord: Record?
     
-    @State var currentSelectedDate = Calendar.current.date(from: DateComponents(year: Date().year, month: Date().monthInYear, day: Date().dayInMonth))!
     @State private var amount: Double?
     @State var item = ""
+    
+    
+    
+    // 当前选择的时间
+    @State var currentSelectedDate = Calendar.current.date(from: DateComponents(year: Date().year, month: Date().monthInYear, day: Date().dayInMonth))!
+    
     
     
     // 显示通知界面
@@ -95,14 +91,14 @@ struct ContentView: View {
                             if #available(iOS 16, *) {
                                 switch chartOrList {
                                 case .accountsList:
-                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                         .environment(\.managedObjectContext, viewContext)
                                 case .accountsChart:
                                     AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                         .environment(\.managedObjectContext, viewContext)
                                 }
                             } else {
-                                AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                     .environment(\.managedObjectContext, viewContext)
                             }
                             
@@ -111,14 +107,10 @@ struct ContentView: View {
                             
                             RoundedRectangle(cornerRadius: 0.3)
                                 .frame(height: 1)
-//                                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .leading, endPoint: .trailing))
                                 .foregroundColor(.accentColor)
                             
                             AddDayAccountView(currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
                                 .environment(\.managedObjectContext, viewContext)
-                            
-//                            AddDayAccountView(currentRecordTag: tags.first!, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
-//                                .environment(\.managedObjectContext, viewContext)
                         }
                         .padding()
                         
@@ -143,8 +135,6 @@ struct ContentView: View {
                                     self.showSettingView = true
                                 } label: {
                                     Label("设置", systemImage: "gear")
-                                    //                                    .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
-                                    
                                 }
                             }
                         }
@@ -164,8 +154,6 @@ struct ContentView: View {
                                             Label("", systemImage: "chart.bar.xaxis")
                                         case .accountsChart:
                                             Label("", systemImage: "list.bullet.rectangle.portrait.fill")
-                                            //                                    default:
-                                            //                                        Label("", systemImage: "list.bullet.rectangle.portrait.fill")
                                         }
                                     }
                                 }
@@ -184,10 +172,8 @@ struct ContentView: View {
                                 } label: {
                                     if self.isUnlocked {
                                         Label("锁定", systemImage: "lock.open")
-                                        //                                        .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
                                     } else {
                                         Label("解锁", systemImage: "lock")
-                                        //                                        .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
                                     }
                                     
                                 }
@@ -257,7 +243,7 @@ extension ContentView {
         return processedDayAccounts
     }
     
-    // 给年Segmentation用
+    // 给年、月Segmentation用
     // 年份，姓名，月份，该月份总和
     var yearCosts: [Int: [String: [String: Double]]] {
         var yearCosts: [Int: [String: [String: Double]]] = [:]

@@ -5,6 +5,9 @@
 //  Created by Jcwang on 2023/3/21.
 //
 
+// 每一个标签都可以被修改，所以需要用一个DetailView来绑定
+// 因为tags是数组，不好写数组的Binding
+
 import SwiftUI
 
 struct EditRecordTagDetailView: View {
@@ -47,8 +50,3 @@ struct EditRecordTagDetailView: View {
     }
 }
 
-//struct EditRecordTagNameView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EditRecordTagNameView()
-//    }
-//}

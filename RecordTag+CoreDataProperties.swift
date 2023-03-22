@@ -10,6 +10,14 @@ import Foundation
 import CoreData
 import SwiftUI
 
+// 一个DayAccount有多个Record，所以DayAccount下的relation是对多，Record下的relation是对一。
+// 一个Record有一个RecordTag，但是RecordTag可以对应多个Record，所以Record下的relation是对一，Tag下的relation是对多。
+// 总的来说，Record都是对一，另外两个都是对多。
+
+// 此处用的tag的数据关联，真的比叶记的关联做的好太多了。
+// Core Data中一般不需要字典，数组这些东西。字典，数组都只需要加入一个关联即可，一对多，然后字典的话，其实可以开放出来，化作结构体。
+// 上面标签作为relation之后，单独访问所有标签只需要fetch标签即可，单独record的标签只需要访问record的belongTag就可以，方便很多。
+
 
 extension RecordTag {
 

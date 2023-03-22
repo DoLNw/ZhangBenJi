@@ -14,8 +14,10 @@ struct SettingView: View {
     // 对应人脸识别的权限
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDLOCK) var shouldLock = false
     
+    
+    
     // 通知逻辑，因为需要在通知显示当天的消费金额，所以需要每一次都更新通知内容。
-    // 所以一开始打开通知后，需要设置通知request。然后每添加修改（AddDayAccountView的Button和onSubmit中）、删除（AccountList中的ondelete）一次今天的消费，需要修改通知request，在中。
+    // 所以1、一开始打开通知后，需要设置通知request。2、然后每添加修改（AddDayAccountView的Button和onSubmit中）、3、删除（AccountList中的ondelete）一次今天的消费，需要修改通知request。
     // 对应通知的权限
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDDAILYREPORT) var shouldDailyReport = false
     // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
@@ -28,16 +30,21 @@ struct SettingView: View {
     
     let notificationCenter = UNUserNotificationCenter.current()
     
+    
+    
 //    @Environment(\.dismiss) var dismiss
     init(isUnlocked: Binding<Bool>, todayPrice: Double) {
         self._isUnlocked = isUnlocked
         self.todayPrice = todayPrice
     }
     
+    
+    
+    
     var body: some View {
         
         ZStack {
-            // 繁花曲线
+            // 繁花曲线，在背景
             SpirographView()
             
             VStack(alignment: .leading) {
@@ -76,7 +83,6 @@ struct SettingView: View {
                     Button {
                         if !alreadySettingReport {
                             // 如果添加或者修改了今天的消费，那么需要修改通知
-                            
                             alreadySettingReport = NotificationHelper.editNotification(savedDailyReportTime: savedDailyReportTime, todayPrice: todayPrice)
                         } else {
                             alreadySettingReport = false // 重新设置时间
