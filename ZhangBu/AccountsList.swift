@@ -21,11 +21,15 @@ struct AccountsList: View {
     @Binding var date: Date
     @Binding var amount: Double?
     @Binding var item: String
+    // 修改时，标签也要改变
+    @Binding var currentRecordTag: RecordTag?
     
     @State var showItemEditOrBar: Bool = true
     
     var segmentationSelection: SegmentationEnum
     @Binding  var currentSelectedDate: Date
+    
+    
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
@@ -35,9 +39,13 @@ struct AccountsList: View {
     var processedDayAccounts: [String: [Date: DayAccount]]
     var yearCosts: [Int: [String: [String: Double]]]
     
+    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
+        animation: .default)
+    var tags: FetchedResults<RecordTag>
     
-    // 从ContentView到本View和AddDayAccountView，为了修改
-//    focusedField
+    
     
     var weekCost: Double {
         var weekCost = 0.0
@@ -113,12 +121,21 @@ struct AccountsList: View {
                     Section {
                         ForEach(dayAccount.wrappedRecords, id: \.id) { record in
                             HStack {
+                                if let tempTag = record.belongTag {
+                                    Text("\(tempTag.wrappedTagName)")
+                                        .font(.caption)
+                                        .foregroundColor(tempTag.wrappedColor)
+                                } else {
+                                    Text("无")
+                                        .font(.caption)
+                                        .foregroundColor(.accentColor)
+                                }
                                 if editRecord == record {
                                     Text("正在修改...")
                                         .font(.title3)
                                         .foregroundColor(.accentColor)
                                     Spacer()
-                                    Text("左滑取消")
+                                    Text("右滑取消")
                                         .foregroundColor(.accentColor)
                                 } else {
                                     Text("\(record.wrappedItem)")
@@ -128,11 +145,10 @@ struct AccountsList: View {
                                         .foregroundColor(.accentColor)
                                 }
                             }
-                            
                             .swipeActions(edge: .leading) {
                                 Button {
                                     if let tempEditRecord = editRecord, tempEditRecord.id == record.id {
-                                        // 此处是修改，需要自动将键盘弹出，然后拿到当前的dayAccount和record，然后让currentSelectedDate是该日期的，item和price得到
+                                        // 此处是取消修改，需要自动将键盘收回，然后取消当前的dayAccount和record，item和price，然后currentSelectedDate，currentRecordTag就不变了
                                         focusedField = nil
                                         
                                         editAccount = nil
@@ -141,7 +157,7 @@ struct AccountsList: View {
                                         amount = nil
                                         item = ""
                                     } else {
-                                        // 此处是修改，需要自动将键盘弹出，然后拿到当前的dayAccount和record，然后让currentSelectedDate是该日期的，item和price得到
+                                        // 此处是修改，需要自动将键盘弹出，然后拿到当前的dayAccount和record，然后让currentSelectedDate是该日期的，currentRecordTag是该record的标签的，item和price得到
                                         focusedField = .amountField
                                         
                                         editAccount = dayAccount
@@ -150,8 +166,14 @@ struct AccountsList: View {
                                         currentSelectedDate = dayAccount.wrappedDate
                                         amount = record.price
                                         item = record.wrappedItem
+                                        
+                                        if let _ = record.belongTag {
+                                            currentRecordTag = record.belongTag
+                                        } else {
+                                            currentRecordTag = tags.first
+                                        }
+                                        
                                     }
-                                    
                                 } label: {
                                     if let tempEditRecord = editRecord, tempEditRecord.id == record.id {
                                         Label("取消修改", systemImage: "")
@@ -160,23 +182,20 @@ struct AccountsList: View {
                                     }
                                 }
                                 .tint(Color.accentColor)
-                                
-                                
                             }
                         }
                         .onDelete { offsets in
                             withAnimation {
                                 let _ = offsets.map { dayAccount.wrappedRecords[$0] }.forEach { record in
-                                    self.removeRecord(dayAccount: dayAccount, for: record)
                                     if dayAccount.wrappedDate.isInToday {
-                                        // 此处计算时间的时候，可能dayAccount已经被remove了，但是能计算出0，不影响
-                                        let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +))
-                                        print("asdas\(dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +))")
+                                        // 如果先remove，此处计算金钱的时候，可能dayAccount已经被remove了，dayAccount会位移到别的地方
+                                        let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +) - record.price)
                                     }
+                                    
+                                    self.removeRecord(dayAccount: dayAccount, for: record)
                                 }
                             }
                         }
-
                     } header: {
                         if currentSelectedDate.isInSameDay(as: dayAccount.wrappedDate) {
                             Text("\(segmentationSelection == .yearSeg ? "\(dayAccount.wrappedDate.monthInYear)月" : "")\(dayAccount.wrappedDate.dayInMonth)号（当前）")

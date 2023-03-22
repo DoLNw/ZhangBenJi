@@ -23,18 +23,39 @@ enum FocusedField {
     case itemField, amountField
 }
 
+enum ShowingView: String, Codable, CaseIterable {
+    case accountsList, accountsChart
+    
+    mutating func toggle() {
+        switch self {
+        case .accountsList:
+            self = .accountsChart
+        case .accountsChart:
+            self = .accountsList
+        }
+    }
+}
+
 struct ContentView: View {
     let selectedChangeGenerator = UISelectionFeedbackGenerator()
     @Environment(\.managedObjectContext) private var viewContext
 
+    // DayACcount表示每一天的消费
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
         animation: .default)
     var dayAccounts: FetchedResults<DayAccount>
     
+    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
+        animation: .default)
+    var tags: FetchedResults<RecordTag>
+    @State var currentRecordTag: RecordTag?
+    
     var personalInfo: PersonalInfo = PersonalInfo(name: StaticProperty.MySelfName, createDate: Date())
     
-    @AppStorage("ChartOrList") var chartOrList = false // true是chart
+    @AppStorage("ChartOrList") var chartOrList: ShowingView = .accountsList // true是chart
     @AppStorage("SegmentationSelection") var segmentationSelection: SegmentationEnum = .weekSeg
     @State private var isUnlocked = false
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDLOCK) var shouldLock = false
@@ -72,15 +93,16 @@ struct ContentView: View {
                             }
                             
                             if #available(iOS 16, *) {
-                                if chartOrList {
-                                    AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                switch chartOrList {
+                                case .accountsList:
+                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                         .environment(\.managedObjectContext, viewContext)
-                                } else {
-                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                case .accountsChart:
+                                    AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                         .environment(\.managedObjectContext, viewContext)
                                 }
                             } else {
-                                AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, date: $currentSelectedDate, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, segmentationSelection: segmentationSelection, currentSelectedDate: $currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                     .environment(\.managedObjectContext, viewContext)
                             }
                             
@@ -92,8 +114,11 @@ struct ContentView: View {
 //                                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .leading, endPoint: .trailing))
                                 .foregroundColor(.accentColor)
                             
-                            AddDayAccountView(currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
+                            AddDayAccountView(currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
                                 .environment(\.managedObjectContext, viewContext)
+                            
+//                            AddDayAccountView(currentRecordTag: tags.first!, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
+//                                .environment(\.managedObjectContext, viewContext)
                         }
                         .padding()
                         
@@ -125,21 +150,23 @@ struct ContentView: View {
                         }
 
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            if !(!isUnlocked && shouldLock) {
-                                Button {
-                                    selectedChangeGenerator.selectionChanged()
-                                    
-                                    withAnimation {
-                                        chartOrList.toggle()
-                                    }
-                                } label: {
-                                    if chartOrList {
-                                        Label("", systemImage: "list.bullet.rectangle.portrait.fill")
-                                        //                                        .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
+                            if #available(iOS 16, *) {
+                                if !(!isUnlocked && shouldLock) {
+                                    Button {
+                                        selectedChangeGenerator.selectionChanged()
                                         
-                                    } else {
-                                        Label("", systemImage: "chart.bar.xaxis")
-                                        //                                        .tint(LinearGradient(gradient: Gradient(colors: [.red, .orange]), startPoint: .top, endPoint: .bottom))
+                                        withAnimation {
+                                            chartOrList.toggle()
+                                        }
+                                    } label: {
+                                        switch chartOrList {
+                                        case .accountsList:
+                                            Label("", systemImage: "chart.bar.xaxis")
+                                        case .accountsChart:
+                                            Label("", systemImage: "list.bullet.rectangle.portrait.fill")
+                                            //                                    default:
+                                            //                                        Label("", systemImage: "list.bullet.rectangle.portrait.fill")
+                                        }
                                     }
                                 }
                             }
@@ -174,6 +201,39 @@ struct ContentView: View {
             // 人脸解锁
             if shouldLock && !isUnlocked {
                 authenticate()
+            }
+            
+            // 首先检查，如果没有标签，设置几个默认的标签
+            if tags.count == 0 {
+                print("aaaaaaa")
+                let tag1 = RecordTag(context: viewContext)
+                tag1.createdDate = Date.now.addingTimeInterval(-500)
+                print(Date.now.addingTimeInterval(-500).description)
+                tag1.tagName = "三餐"
+                tag1.id = UUID()
+                tag1.setColor(color: .cyan)
+                
+                let tag2 = RecordTag(context: viewContext)
+                tag2.createdDate = Date.now.addingTimeInterval(-400)
+                print(Date.now.addingTimeInterval(-400).description)
+                tag2.tagName = "娱乐"
+                tag2.id = UUID()
+                tag2.setColor(color: .blue)
+                
+                let tag3 = RecordTag(context: viewContext)
+                tag3.createdDate = Date.now.addingTimeInterval(-300)
+                print(Date.now.addingTimeInterval(-300).description)
+                tag3.tagName = "交通"
+                tag3.id = UUID()
+                tag3.setColor(color: .red)
+                
+                let tag4 = RecordTag(context: viewContext)
+                tag4.createdDate = Date.now.addingTimeInterval(-200)
+                tag4.tagName = "其它"
+                tag4.id = UUID()
+                tag4.setColor(color: .orange)
+                
+                viewContextSave()
             }
         }
         
@@ -236,12 +296,7 @@ extension ContentView {
         if processedDayAccounts[name]![date]!.wrappedRecords.count == 0 {
             viewContext.delete(processedDayAccounts[name]![date]!)
             
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            viewContextSave()
         }
     }
     
@@ -268,8 +323,14 @@ extension ContentView {
         }
     }
     
-    // 设置通知
-    // 在每天一定时候设置通知提醒，提醒今日已经消费，然后记录今天未记录的。当然还需要放入后面天的通知，因为避免后面天不打开app。
+    func viewContextSave() {
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
 }
 
 

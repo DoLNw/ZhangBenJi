@@ -11,6 +11,15 @@ private var supriseString = ["诚妈": "周林芬", "忠忠": "王建忠", "王�
 struct AddDayAccountView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \RecordTag.createdDate, ascending: true)],
+        animation: .default)
+    var tags: FetchedResults<RecordTag>
+    
+    @Binding var currentRecordTag: RecordTag?
+    @State private var showEditRecordTagView = false
+    
     @Binding var currentSelectedDate: Date
     @Binding var amount: Double?
     @Binding var item: String
@@ -26,7 +35,6 @@ struct AddDayAccountView: View {
     
     @State var supriseFullName: String?
     @State var showSuprise = false
-    
     
     // 对应通知的权限，每一次添加或者修改消费之后，需要更新通知
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDDAILYREPORT) var shouldDailyReport = false
@@ -52,17 +60,37 @@ struct AddDayAccountView: View {
                     .font(.title)
                     .focused($focusedField, equals: .itemField)
                 
+                Picker("", selection: $currentRecordTag) {
+                    ForEach(tags, id: \.wrappedID) { tag in
+                        Text("\(tag.wrappedTagName)")
+                            .foregroundColor(tag.wrappedColor)
+//                            .tag(tag as? RecordTag)
+                            .tag(Optional(tag))
+                    }
+                    Text("编辑标签").tag(nil as RecordTag?)
+                }
+                .pickerStyle(.menu)
+                .frame(width: 100, alignment: .trailing)
+                .onChange(of: currentRecordTag) { newValue in
+                    // 此处使用nil表示需要编辑标签，弹出编辑界面。然后这个标签被主动设置为第一个
+                    if currentRecordTag == nil {
+                        showEditRecordTagView = true
+                        currentRecordTag = tags.first
+                    }
+                }
+                
+                
                 Button() {
-                    if let tempAmount = amount, item != "" {
+                    if let tempAmount = amount, let tag = currentRecordTag {
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
                         
                         if let tempEditAccount = editAccount, let tempEditRecord = editRecord {
                             self.removeRecord(dayAccount: tempEditAccount, for: tempEditRecord)
                             
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate)
+                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate, tag: tag)
                         } else {
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount)
+                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, tag: tag)
                         }
                         
                         amount = nil
@@ -106,18 +134,17 @@ struct AddDayAccountView: View {
                         showSuprise = true
                     }
                     
-                    if let tempAmount = amount, item != "" {
+                    if let tempAmount = amount, let tag = currentRecordTag {
                         let generator = UIImpactFeedbackGenerator(style: .medium)
                         generator.impactOccurred()
                         
                         if let tempEditAccount = editAccount, let tempEditRecord = editRecord {
                             self.removeRecord(dayAccount: tempEditAccount, for: tempEditRecord)
                             
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate)
-                            
+                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate, tag: tag)
                             
                         } else {
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount)
+                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, tag: tag)
                         }
                         
                         amount = nil
@@ -209,10 +236,19 @@ struct AddDayAccountView: View {
                             currentSelectedDate = Calendar.current.date(from: components)!
                         }
                 }
+//                DatePicker("", selection: $currentSelectedDate, displayedComponents: .date)
+//                    .datePickerStyle(showFullDatePicker ? .graphical : .compact)
             }
         }
+        .sheet(isPresented: $showEditRecordTagView, content: {
+            EditRecordTagView()
+                .environment(\.managedObjectContext, viewContext)
+        })
         .alert(isPresented: $showSuprise) {
             Alert(title: Text("这是彩蛋奥!"), message: Text("你好呀，\(supriseFullName ?? item)~"))
+        }
+        .onAppear {
+            currentRecordTag = tags.first
         }
     }
 }
@@ -221,13 +257,15 @@ struct AddDayAccountView: View {
 extension AddDayAccountView {
     // 同一天内，不同的物品消费，添加
     // 此处需要再加一个tempDayAccount.wrappedRecords.count != 0，因为edit的时候吗，先删除可能吧dayAccount删除了但是processedDayAccounts还没有改变，导致出错。
-    func addRecord(by name: String, and date: Date, with item: String, price: Double, createdDate: Date = Date()) -> Void {
+    // createdDate是给record排序用的，与RecordTag的的createdDate是一样的。
+    func addRecord(by name: String, and date: Date, with item: String, price: Double, createdDate: Date = Date(), tag: RecordTag) -> Void {
         if let _ = processedDayAccounts[name], let tempDayAccount = processedDayAccounts[name]![date], tempDayAccount.wrappedRecords.count != 0 {
             let record = Record(context: viewContext)
             record.id = UUID()
             record.createDate = createdDate
-            record.item = item
+            record.item = item == "" ? tag.wrappedTagName : item
             record.price = price
+            record.belongTag = tag
             
             processedDayAccounts[name]![date]!.addToRecords(record)
         } else {
@@ -241,7 +279,8 @@ extension AddDayAccountView {
             record.createDate = createdDate
             record.id = UUID()
             record.price = price
-            record.item = item
+            record.item = item == "" ? tag.wrappedTagName : item
+            record.belongTag = tag
         }
         
         //        self._addRecord(by: name, and: date, with: item, price: price)
