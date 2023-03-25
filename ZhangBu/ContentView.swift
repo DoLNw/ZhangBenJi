@@ -19,7 +19,7 @@ struct ContentView: View {
     
     
     @Environment(\.managedObjectContext) private var viewContext
-
+    
     
     
     // DayACcount表示每一天的消费
@@ -105,9 +105,9 @@ struct ContentView: View {
                             
                             Spacer()
                             
-                            RoundedRectangle(cornerRadius: 0.3)
-                                .frame(height: 1)
-                                .foregroundColor(.accentColor)
+//                            RoundedRectangle(cornerRadius: 0.3)
+//                                .frame(height: 1)
+//                                .foregroundColor(.accentColor)
                             
                             AddDayAccountView(currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
                                 .environment(\.managedObjectContext, viewContext)

@@ -67,6 +67,12 @@ struct AccountsList: View {
     
     
     
+    // 显示标签图，用AppStorage没有动画了，还是不加了
+//    @AppStorage(StaticProperty.USERDEFAULTS_SHOWPROPERTITY) var showTagPro = false
+    @State var showTagPro = false
+    
+    
+    
     // DayAccount中每一个Record会有一个RecordTag，我这里从tag入手，先拿到所有的tag
     // 修改时，如果没有标签，那么默认第一个标签
     @FetchRequest(
@@ -98,29 +104,59 @@ struct AccountsList: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            switch segmentationSelection {
-            case .daySeg:
-                if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]?[currentSelectedDate] {
-                    Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
+            HStack {
+                switch segmentationSelection {
+                case .daySeg:
+                    if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]?[currentSelectedDate] {
+                        Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
+                            .foregroundColor(.accentColor)
+                    } else {
+                        Text("日消费：¥0.00").bold()
+                            .foregroundColor(.accentColor)
+                    }
+                
+                case .weekSeg:
+                    Text("第\(currentSelectedDate.weekInMonth)周消费：¥\(weekCost, specifier: "%.2F")").bold()
                         .foregroundColor(.accentColor)
-                } else {
-                    Text("日消费：¥0.00").bold()
+                case .monthSeg:
+                    let currentMonthCost = yearCosts[currentSelectedDate.year]?[StaticProperty.MySelfName]?[String(currentSelectedDate.monthInYear)] ?? 0.0
+
+                    Text("月消费：¥\(currentMonthCost, specifier: "%.2F")").bold()
+                        .foregroundColor(.accentColor)
+                case .yearSeg:
+                    let currentYearCost = yearCosts[currentSelectedDate.year] ?? [String: [String: Double]]()
+                        
+                    Text("年消费：¥\(currentYearCost[StaticProperty.MySelfName]?.values.reduce(0.0, +) ?? 0.0, specifier: "%.2F")").bold()
                         .foregroundColor(.accentColor)
                 }
+                
+                Spacer()
+                
+                if #available(iOS 16.0, *) {
+//                    Toggle("标签图", isOn: $showTagPro.animation())
+//                        .frame(width: 120)
+//                        .foregroundColor(.accentColor)
+                    Button {
+                        withAnimation {
+                            showTagPro.toggle()
+                        }
+                    } label: {
+                        if showTagPro {
+                            Label("", systemImage: "chart.pie.fill")
+                                .font(.title2)
+                        } else {
+                            Label("", systemImage: "chart.pie")
+                                .font(.title2)
+                        }
+                    }
+                }
+            }
             
-            case .weekSeg:
-                Text("第\(currentSelectedDate.weekInMonth)周消费：¥\(weekCost, specifier: "%.2F")").bold()
-                    .foregroundColor(.accentColor)
-            case .monthSeg:
-                let currentMonthCost = yearCosts[currentSelectedDate.year]?[StaticProperty.MySelfName]?[String(currentSelectedDate.monthInYear)] ?? 0.0
-
-                Text("月消费：¥\(currentMonthCost, specifier: "%.2F")").bold()
-                    .foregroundColor(.accentColor)
-            case .yearSeg:
-                let currentYearCost = yearCosts[currentSelectedDate.year] ?? [String: [String: Double]]()
-                    
-                Text("年消费：¥\(currentYearCost[StaticProperty.MySelfName]?.values.reduce(0.0, +) ?? 0.0, specifier: "%.2F")").bold()
-                    .foregroundColor(.accentColor)
+            
+            if #available(iOS 16.0, *), showTagPro {
+                if showTagPro {
+                    OneDimensionalBar(currentSelectedDate: currentSelectedDate, currentSegment: segmentationSelection)
+                }
             }
             
             List(dayAccounts, id: \.id) { dayAccount in
@@ -149,7 +185,7 @@ struct AccountsList: View {
                                     Text("\(record.wrappedItem)")
                                         .font(.title3)
                                     Spacer()
-                                    Text("¥\(record.price, specifier: "%.2F")")
+                                    Text("-¥\(record.price, specifier: "%.2F")")
                                         .foregroundColor(.accentColor)
                                 }
                             }
@@ -180,7 +216,6 @@ struct AccountsList: View {
                                         } else {
                                             currentRecordTag = tags.first
                                         }
-                                        
                                     }
                                 } label: {
                                     if let tempEditRecord = editRecord, tempEditRecord.id == record.id {

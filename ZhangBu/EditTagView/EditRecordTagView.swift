@@ -82,6 +82,8 @@ struct EditRecordTagView: View {
                     }
                 }
                 .listRowSeparatorTint(.accentColor)
+            } header: {
+                Text("标签")
             }
             
             

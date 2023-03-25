@@ -19,6 +19,11 @@ struct AccountsChart: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     
+    
+    let selectedChangeGenerator = UISelectionFeedbackGenerator()
+    
+    
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DayAccount.date, ascending: false)],
         animation: .default)
@@ -91,8 +96,13 @@ struct AccountsChart: View {
             switch segmentationSelection {
             case .daySeg:
                 if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]?[currentSelectedDate] {
-                    Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
-                        .foregroundColor(.accentColor)
+                    HStack {
+                        Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
+                            .foregroundColor(.accentColor)
+                        
+                        
+                    }
+                    
 
                     Chart {
                         ForEach(tempDayAccount.wrappedRecords, id: \.id) { record in
@@ -118,6 +128,7 @@ struct AccountsChart: View {
                             AxisValueLabel()
                         }
                     }
+                    
                 } else {
                     Text("日消费：¥0.00").bold()
                         .foregroundColor(.accentColor)
@@ -244,6 +255,11 @@ struct AccountsChart: View {
                                     return
                                 }
                                 
+                                // 增加触感
+                                if !selectedDate.isInSameDay(as: self.selectedDate) {
+                                    selectedChangeGenerator.selectionChanged()
+                                }
+                                
                                 self.selectedDate = selectedDate
                             }
                             .gesture(
@@ -256,6 +272,11 @@ struct AccountsChart: View {
                                         guard let selectedDate: Date = proxy.value(atX: currentX, as: Date.self) else {
                                             
                                             return
+                                        }
+                                        
+                                        // 增加触感
+                                        if !selectedDate.isInSameDay(as: self.selectedDate) {
+                                            selectedChangeGenerator.selectionChanged()
                                         }
                                         
                                         self.selectedDate = selectedDate

@@ -51,7 +51,6 @@ struct AddDayAccountView: View {
     
     
     
-    
     // 对应通知的权限，每一次添加或者修改消费之后，需要更新通知
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDDAILYREPORT) var shouldDailyReport = false
     // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
@@ -73,80 +72,84 @@ struct AddDayAccountView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack() {
-                Text("¥")
-                    .font(.title)
-                TextField("金额", value: $amount, format: .number)
-                    .keyboardType(.decimalPad)
-                    .focused($focusedField, equals: .amountField)
-                    .font(.title)
+//            ZStack {
+//                RoundedRectangle(cornerRadius: 5)
                 
-                TextField("物品", text: $item)
-                    .font(.title)
-                    .focused($focusedField, equals: .itemField)
-                
-                Picker("", selection: $currentRecordTag) {
-                    ForEach(tags, id: \.wrappedID) { tag in
-                        Text("\(tag.wrappedTagName)")
-                            .foregroundColor(tag.wrappedColor)
-//                            .tag(tag as? RecordTag)
-                            .tag(Optional(tag))
-                    }
-                    Text("编辑标签").tag(nil as RecordTag?)
-                }
-                .pickerStyle(.menu)
-                .frame(width: 100, alignment: .trailing)
-                .onChange(of: currentRecordTag) { newValue in
-                    // 此处使用nil表示需要编辑标签，弹出编辑界面。然后这个标签被主动设置为第一个
-                    if currentRecordTag == nil {
-                        showEditRecordTagView = true
-                        currentRecordTag = tags.first
-                    }
-                }
-                
-                
-                Button() {
-                    if let tempAmount = amount, let tag = currentRecordTag {
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.impactOccurred()
-                        
-                        if let tempEditAccount = editAccount, let tempEditRecord = editRecord {
-                            self.removeRecord(dayAccount: tempEditAccount, for: tempEditRecord)
-                            
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate, tag: tag)
-                        } else {
-                            self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, tag: tag)
+                HStack() {
+                    Text("¥")
+                        .font(.title)
+                    TextField("金额", value: $amount, format: .number)
+                        .keyboardType(.decimalPad)
+                        .focused($focusedField, equals: .amountField)
+                        .font(.title)
+                    
+                    TextField("物品", text: $item)
+                        .font(.title)
+                        .focused($focusedField, equals: .itemField)
+                    
+                    Picker("", selection: $currentRecordTag) {
+                        ForEach(tags, id: \.wrappedID) { tag in
+                            Text("\(tag.wrappedTagName)")
+                                .foregroundColor(tag.wrappedColor)
+    //                            .tag(tag as? RecordTag)
+                                .tag(Optional(tag))
                         }
-                        
-                        amount = nil
-                        item = ""
-                        editAccount = nil
-                        editRecord = nil
-                        
-                        // 如果添加或者修改了今天的消费，那么需要修改通知
-                        if currentSelectedDate.isInToday {
-                            var todayPrice = 0.0
-                            if let _ = processedDayAccounts[StaticProperty.MySelfName] {
-                                if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
-                                    todayPrice = tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
-                                }
-                            }
-                            
-                            alreadySettingReport = NotificationHelper.editNotification(savedDailyReportTime: savedDailyReportTime, todayPrice: todayPrice)
+                        Text("编辑标签").tag(nil as RecordTag?)
+                    }
+                    .pickerStyle(.menu)
+                    .frame(width: 100, alignment: .trailing)
+                    .onChange(of: currentRecordTag) { newValue in
+                        // 此处使用nil表示需要编辑标签，弹出编辑界面。然后这个标签被主动设置为第一个
+                        if currentRecordTag == nil {
+                            showEditRecordTagView = true
+                            currentRecordTag = tags.first
                         }
                     }
                     
-                    focusedField = nil
-                } label: {
-                    if let _ = editAccount {
-                        Label("", systemImage: "pencil.line")
-                            .font(.title)
-                    } else {
-                        Label("", systemImage: "plus.app.fill")
-                            .font(.title)
+                    
+                    Button() {
+                        if let tempAmount = amount, let tag = currentRecordTag {
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.impactOccurred()
+                            
+                            if let tempEditAccount = editAccount, let tempEditRecord = editRecord {
+                                self.removeRecord(dayAccount: tempEditAccount, for: tempEditRecord)
+                                
+                                self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, createdDate: tempEditRecord.wrappedcreateDate, tag: tag)
+                            } else {
+                                self.addRecord(by: StaticProperty.MySelfName, and: currentSelectedDate, with: item, price: tempAmount, tag: tag)
+                            }
+                            
+                            amount = nil
+                            item = ""
+                            editAccount = nil
+                            editRecord = nil
+                            
+                            // 如果添加或者修改了今天的消费，那么需要修改通知
+                            if currentSelectedDate.isInToday {
+                                var todayPrice = 0.0
+                                if let _ = processedDayAccounts[StaticProperty.MySelfName] {
+                                    if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
+                                        todayPrice = tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+                                    }
+                                }
+                                
+                                alreadySettingReport = NotificationHelper.editNotification(savedDailyReportTime: savedDailyReportTime, todayPrice: todayPrice)
+                            }
+                        }
+                        
+                        focusedField = nil
+                    } label: {
+                        if let _ = editAccount {
+                            Label("", systemImage: "pencil.line")
+                                .font(.title)
+                        } else {
+                            Label("", systemImage: "plus.app.fill")
+                                .font(.title)
+                        }
                     }
                 }
-            }
+//            }
             .onSubmit {
                 // 按下回车之后会有反应
                 if focusedField == .amountField {
@@ -262,9 +265,23 @@ struct AddDayAccountView: View {
 //                    .datePickerStyle(showFullDatePicker ? .graphical : .compact)
             }
         }
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(UIColor.systemBackground))
+                .padding(-5)
+//                .shadow(color: Color(UIColor.systemGray), radius: 10, x: 5, y: 5)
+                .shadow(color: .accentColor.opacity(0.35), radius: 10)
+        )
         .sheet(isPresented: $showEditRecordTagView, content: {
-            EditRecordTagView()
-                .environment(\.managedObjectContext, viewContext)
+            if #available(iOS 16.0, *) {
+                EditRecordTagView()
+                    .environment(\.managedObjectContext, viewContext)
+                    .presentationDetents([.medium, .large])
+//                    .presentationDetents([.fraction(0.2), .height(100)])
+            } else {
+                EditRecordTagView()
+                    .environment(\.managedObjectContext, viewContext)
+            }
         })
         .alert(isPresented: $showSuprise) {
             Alert(title: Text("这是彩蛋奥!"), message: Text("你好呀，\(supriseFullName ?? item)~"))

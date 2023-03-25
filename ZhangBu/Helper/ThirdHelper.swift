@@ -70,6 +70,12 @@ extension Date {
     func isInSameDay(as date: Date) -> Bool {
         Calendar.current.isDate(self, inSameDayAs: date)
     }
+    func isInSameDay(as date: Date?) -> Bool {
+        if let date = date {
+            return Calendar.current.isDate(self, inSameDayAs: date)
+        }
+        return false
+    }
     
     var isInThisYear:  Bool { isInSameYear(as: Date()) }
         var isInThisMonth: Bool { isInSameMonth(as: Date()) }

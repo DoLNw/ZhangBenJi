@@ -19,5 +19,7 @@ class StaticProperty {
     
     static let USERFEFAULTS_CHARTORLIST = "ChartOrList"
     static let USERFEFAULTS_SegmentationSelection = "SegmentationSelection"
+    
+    static let USERDEFAULTS_SHOWPROPERTITY = "showPropertity"
 }
 
