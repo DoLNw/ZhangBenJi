@@ -19,7 +19,7 @@ struct ContentView: View {
     
     
     @Environment(\.managedObjectContext) private var viewContext
-    
+    @EnvironmentObject private var purchaseManager: PurchaseManager
     
     
     // DayACcount表示每一天的消费
@@ -74,43 +74,44 @@ struct ContentView: View {
         ZStack {
                 MyNavigation {
                     ZStack {
-                        VStack(alignment: .leading) {
-                            
-                            Picker("", selection: $segmentationSelection) {
-                                ForEach(SegmentationEnum.allCases, id: \.self) { option in
-                                    Text(option.rawValue)
-                                    
-                                }
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
-                            .frame(alignment: .top)
-                            .onChange(of: segmentationSelection) { newValue in
-                                selectedChangeGenerator.selectionChanged()
-                            }
-                            
-                            if #available(iOS 16, *) {
-                                switch chartOrList {
-                                case .accountsList:
+                        ZStack(alignment: .bottom) {
+                            VStack(alignment: .leading) {
+                                
+//                                Picker("", selection: $segmentationSelection) {
+//                                    ForEach(SegmentationEnum.allCases, id: \.self) { option in
+//                                        Text(option.rawValue)
+//
+//                                    }
+//                                }
+//                                .pickerStyle(SegmentedPickerStyle())
+//                                .frame(alignment: .top)
+//                                .onChange(of: segmentationSelection) { newValue in
+//                                    selectedChangeGenerator.selectionChanged()
+//                                }
+                                
+                                MySegmentSelection(segmentationSelection: $segmentationSelection)
+                                
+                                if #available(iOS 16, *) {
+                                    switch chartOrList {
+                                    case .accountsList:
+                                        AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                            .environment(\.managedObjectContext, viewContext)
+                                    case .accountsChart:
+                                        AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                            .environment(\.managedObjectContext, viewContext)
+                                    }
+                                } else {
                                     AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                         .environment(\.managedObjectContext, viewContext)
-                                case .accountsChart:
-                                    AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
-                                        .environment(\.managedObjectContext, viewContext)
                                 }
-                            } else {
-                                AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                
+                                Spacer()
+                                
+                                AddDayAccountView(currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
                                     .environment(\.managedObjectContext, viewContext)
                             }
                             
-                            
-                            Spacer()
-                            
-//                            RoundedRectangle(cornerRadius: 0.3)
-//                                .frame(height: 1)
-//                                .foregroundColor(.accentColor)
-                            
-                            AddDayAccountView(currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, amount: $amount, item: $item, focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, processedDayAccounts: processedDayAccounts, personalInfo: personalInfo)
-                                .environment(\.managedObjectContext, viewContext)
+                            // 本来这里的这个ZStack是吧AddDayAccountView和上面的List叠加放置的，但是List最后的看不到了。
                         }
                         .padding()
                         
@@ -125,7 +126,18 @@ struct ContentView: View {
                         }
                     }
                     .sheet(isPresented: $showSettingView, content: {
-                        SettingView(isUnlocked: $isUnlocked, todayPrice: todayPrice)
+                        if #available(iOS 16.0, *) {
+                            SettingView(isUnlocked: $isUnlocked, todayPrice: todayPrice)
+                                .environment(\.managedObjectContext, viewContext)
+                                .presentationDetents([.medium, .large])
+//                                .presentationDetents([.fraction(0.2), .height(100)])
+                                .environmentObject(purchaseManager)
+                        } else {
+                            SettingView(isUnlocked: $isUnlocked, todayPrice: todayPrice)
+                                .environment(\.managedObjectContext, viewContext)
+                                .environmentObject(purchaseManager)
+                        }
+                        
                     })
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {

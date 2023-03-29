@@ -265,6 +265,7 @@ struct AddDayAccountView: View {
 //                    .datePickerStyle(showFullDatePicker ? .graphical : .compact)
             }
         }
+        .padding(5)
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color(UIColor.systemBackground))

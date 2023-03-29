@@ -90,20 +90,13 @@ struct AccountsChart: View {
     
     
     var body: some View {
-        
         VStack(alignment: .leading) {
-            
             switch segmentationSelection {
             case .daySeg:
                 if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]?[currentSelectedDate] {
-                    HStack {
-                        Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
-                            .foregroundColor(.accentColor)
-                        
-                        
-                    }
+                    Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
+                        .foregroundColor(.accentColor)
                     
-
                     Chart {
                         ForEach(tempDayAccount.wrappedRecords, id: \.id) { record in
                             BarMark(x: .value("item", record.wrappedItem), y: .value("price", record.price))
@@ -128,11 +121,37 @@ struct AccountsChart: View {
                             AxisValueLabel()
                         }
                     }
-                    
                 } else {
                     Text("日消费：¥0.00").bold()
                         .foregroundColor(.accentColor)
+                    
+                    Chart {
+                        ForEach([Record](), id: \.id) { record in
+                            BarMark(x: .value("item", record.wrappedItem), y: .value("price", record.price))
+                                .annotation {
+                                    Text("\(record.price, specifier: "%.2F")")
+                                        .font(.footnote)
+                                }
+                                .foregroundStyle(gradients[StaticProperty.MySelfName]!)
+                                .foregroundStyle(by:.value("item", StaticProperty.MySelfName))
+                        }
+                    }
+                    .chartLegend(.hidden)
+                    .chartYAxis {
+                        AxisMarks(position: .leading) {
+                            AxisGridLine(centered: false, stroke: StrokeStyle(dash: [2.5])).foregroundStyle(Color.accentColor)
+                            AxisValueLabel()
+                        }
+                    }
+                    .chartXAxis {
+                        AxisMarks {
+                            AxisGridLine(centered: false, stroke: StrokeStyle(dash: [2.5])).foregroundStyle(Color.accentColor)
+                            AxisValueLabel()
+                        }
+                    }
                 }
+                
+                
 
                     
             case .weekSeg:
@@ -336,8 +355,17 @@ struct AccountsChart: View {
                         }
                     }
                 }
-
             }
+        }
+        .padding([.top, .bottom], 20)
+        .padding([.leading, .trailing], 10)
+        .background {
+            RoundedRectangle(cornerRadius: 10)
+//                .fill(Color(.systemFill))
+//                .fill(.gray)
+                .fill(Color(UIColor.systemBackground))
+                .padding([.top, .bottom], 10)
+                .shadow(color: .accentColor.opacity(0.4), radius: 5, x: 2, y: 2)
         }
     }
 }

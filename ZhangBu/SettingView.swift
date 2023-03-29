@@ -10,6 +10,10 @@ import LocalAuthentication
 import UserNotifications
 
 struct SettingView: View {
+    @EnvironmentObject private var purchaseManager: PurchaseManager
+    
+    
+    
     @Binding private var isUnlocked: Bool
     // 对应人脸识别的权限
     @AppStorage(StaticProperty.USERFEFAULTS_SHOULDLOCK) var shouldLock = false
@@ -93,6 +97,9 @@ struct SettingView: View {
                         Text("\(alreadySettingReport ? "已设置每天\(dailyReportTime.hour)：\(dailyReportTime.minute)发送日报，点击可调整时间" : "未设置日报通知，点击设置每天此时间发送日报")")
                     }
                 }
+                
+                PurchaseView()
+                    .environmentObject(purchaseManager)
                 
                 // TODO
     //            Toggle("使用iCloud同步", isOn: $shouldLock)

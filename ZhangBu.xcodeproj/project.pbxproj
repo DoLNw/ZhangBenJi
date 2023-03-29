@@ -33,6 +33,10 @@
 		9D78C77429C8A44400B84A5C /* EditRecordTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */; };
 		9D78C77829C9E37C00B84A5C /* EditRecordTagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */; };
 		9D8A5FBD29CB45790037F8F3 /* SomeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */; };
+		9D8C699029D2C1C700846ABA /* MySegmentSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C698F29D2C1C700846ABA /* MySegmentSelection.swift */; };
+		9D8C699429D422BC00846ABA /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699329D422BC00846ABA /* PurchaseView.swift */; };
+		9D8C699629D4618B00846ABA /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699529D4618B00846ABA /* PurchaseManager.swift */; };
+		9D8C699929D485D200846ABA /* PurchaseItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699829D485D200846ABA /* PurchaseItemView.swift */; };
 		9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA4EB1429C3470B003DB3BF /* ICONView.swift */; };
 		9DD7151F29CC9B7100BBDEA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9DD7152129CC9B7100BBDEA0 /* Localizable.strings */; };
 		9DD7152629CD732600BBDEA0 /* OneDimensionalBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD7152529CD732600BBDEA0 /* OneDimensionalBar.swift */; };
@@ -68,6 +72,11 @@
 		9D78C77329C8A44400B84A5C /* EditRecordTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecordTagView.swift; sourceTree = "<group>"; };
 		9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditRecordTagDetailView.swift; sourceTree = "<group>"; };
 		9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SomeClass.swift; sourceTree = "<group>"; };
+		9D8C698F29D2C1C700846ABA /* MySegmentSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySegmentSelection.swift; sourceTree = "<group>"; };
+		9D8C699229D3287B00846ABA /* StoreConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreConfiguration.storekit; sourceTree = "<group>"; };
+		9D8C699329D422BC00846ABA /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
+		9D8C699529D4618B00846ABA /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		9D8C699829D485D200846ABA /* PurchaseItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseItemView.swift; sourceTree = "<group>"; };
 		9DA4EB1429C3470B003DB3BF /* ICONView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICONView.swift; sourceTree = "<group>"; };
 		9DD7152029CC9B7100BBDEA0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9DD7152229CC9BDB00BBDEA0 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -136,8 +145,10 @@
 				9D2D08DD29C4925B00E6404C /* CoreData */,
 				9D8A5FBE29CB46260037F8F3 /* ListAndChart */,
 				9D8A5FB929CB443F0037F8F3 /* EditTagView */,
+				9D8C699729D462D900846ABA /* StoreKit */,
 				9D5A939929BEC56900EF4747 /* AddDayAccountView.swift */,
 				9D5A936929BE1B4700EF4747 /* ContentView.swift */,
+				9D8C699229D3287B00846ABA /* StoreConfiguration.storekit */,
 				9D5A93A729C2111900EF4747 /* SettingView.swift */,
 				9D5A936B29BE1B4700EF4747 /* Assets.xcassets */,
 				9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */,
@@ -183,8 +194,19 @@
 				9D2D08D129C445E700E6404C /* MyNavigation.swift */,
 				9D5A939529BE26C600EF4747 /* StaticProperty.swift */,
 				9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */,
+				9D8C698F29D2C1C700846ABA /* MySegmentSelection.swift */,
 			);
 			path = Widgets;
+			sourceTree = "<group>";
+		};
+		9D8C699729D462D900846ABA /* StoreKit */ = {
+			isa = PBXGroup;
+			children = (
+				9D8C699329D422BC00846ABA /* PurchaseView.swift */,
+				9D8C699829D485D200846ABA /* PurchaseItemView.swift */,
+				9D8C699529D4618B00846ABA /* PurchaseManager.swift */,
+			);
+			path = StoreKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,9 +284,12 @@
 				9D5A937129BE1B4700EF4747 /* Persistence.swift in Sources */,
 				9D5A93A429C20FB500EF4747 /* SpirographView.swift in Sources */,
 				9D5A939C29BF1F1000EF4747 /* AccountsList.swift in Sources */,
+				9D8C699629D4618B00846ABA /* PurchaseManager.swift in Sources */,
 				9D2D08D429C44A8600E6404C /* ThirdHelper.swift in Sources */,
 				9D2D08DA29C44AB300E6404C /* DayAccount+CoreDataProperties.swift in Sources */,
+				9D8C699029D2C1C700846ABA /* MySegmentSelection.swift in Sources */,
 				9D2D08D929C44AB300E6404C /* DayAccount+CoreDataClass.swift in Sources */,
+				9D8C699429D422BC00846ABA /* PurchaseView.swift in Sources */,
 				9D5A939A29BEC56900EF4747 /* AddDayAccountView.swift in Sources */,
 				9D78C77829C9E37C00B84A5C /* EditRecordTagDetailView.swift in Sources */,
 				9D78C76B29C8899900B84A5C /* Record+CoreDataClass.swift in Sources */,
@@ -278,6 +303,7 @@
 				9D78C76C29C8899900B84A5C /* Record+CoreDataProperties.swift in Sources */,
 				9D5A93A029BF532000EF4747 /* AccountsChart.swift in Sources */,
 				9D5A936829BE1B4600EF4747 /* ZhangBuApp.swift in Sources */,
+				9D8C699929D485D200846ABA /* PurchaseItemView.swift in Sources */,
 				9D5A939829BE271800EF4747 /* PersonalInfo.swift in Sources */,
 				9D2D08D229C445E700E6404C /* MyNavigation.swift in Sources */,
 				9D78C77129C892A000B84A5C /* RecordTag+CoreDataClass.swift in Sources */,

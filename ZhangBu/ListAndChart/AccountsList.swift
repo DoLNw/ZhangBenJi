@@ -151,6 +151,8 @@ struct AccountsList: View {
                     }
                 }
             }
+            .padding([.leading], 18)
+            .padding([.trailing], 8)
             
             
             if #available(iOS 16.0, *), showTagPro {
@@ -255,6 +257,12 @@ struct AccountsList: View {
             }
             .listStyle(.inset)
         }
+//        .background {
+//            RoundedRectangle(cornerRadius: 10)
+//                .fill(Color(UIColor.systemBackground))
+//                .padding([.top, .bottom], 10)
+//                .shadow(color: .accentColor.opacity(0.4), radius: 5, x: 2, y: 2)
+//        }
     }
 }
 

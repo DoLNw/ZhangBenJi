@@ -1,0 +1,50 @@
+{
+  "identifier" : "C2E647BF",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6446895662",
+      "localizations" : [
+        {
+          "description" : "可以将自己的账本共享给他人",
+          "displayName" : "多人共享",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "Multi_Sharing",
+      "referenceName" : "Multi Sharing",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6446895650",
+      "localizations" : [
+        {
+          "description" : "提供更多的图表显示",
+          "displayName" : "丰富图表",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "various_charts",
+      "referenceName" : "Various Chart",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6446364909",
+    "_developerTeamID" : "QXK2SWBXZ7",
+    "_lastSynchronizedDate" : 701704321.35205805
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
