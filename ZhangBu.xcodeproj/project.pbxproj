@@ -37,6 +37,9 @@
 		9D8C699429D422BC00846ABA /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699329D422BC00846ABA /* PurchaseView.swift */; };
 		9D8C699629D4618B00846ABA /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699529D4618B00846ABA /* PurchaseManager.swift */; };
 		9D8C699929D485D200846ABA /* PurchaseItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699829D485D200846ABA /* PurchaseItemView.swift */; };
+		9D8C699B29D48D4A00846ABA /* EntitlementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699A29D48D4A00846ABA /* EntitlementManager.swift */; };
+		9D8C699D29D5821E00846ABA /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699C29D5821E00846ABA /* CircleProgressView.swift */; };
+		9D8C699F29D5D55600846ABA /* CostTextAndChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C699E29D5D55600846ABA /* CostTextAndChartView.swift */; };
 		9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA4EB1429C3470B003DB3BF /* ICONView.swift */; };
 		9DD7151F29CC9B7100BBDEA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9DD7152129CC9B7100BBDEA0 /* Localizable.strings */; };
 		9DD7152629CD732600BBDEA0 /* OneDimensionalBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD7152529CD732600BBDEA0 /* OneDimensionalBar.swift */; };
@@ -47,6 +50,7 @@
 		9D2D08D329C44A8600E6404C /* ThirdHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThirdHelper.swift; path = ZhangBu/Helper/ThirdHelper.swift; sourceTree = SOURCE_ROOT; };
 		9D2D08D529C44AB300E6404C /* DayAccount+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DayAccount+CoreDataClass.swift"; path = "ZhangBu/CoreData/DayAccount+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		9D2D08D629C44AB300E6404C /* DayAccount+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "DayAccount+CoreDataProperties.swift"; path = "ZhangBu/CoreData/DayAccount+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		9D4D3FAE29E7BFDD00437776 /* StoreConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreConfiguration.storekit; sourceTree = "<group>"; };
 		9D5A936429BE1B4600EF4747 /* ZhangBu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZhangBu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D5A936729BE1B4600EF4747 /* ZhangBuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZhangBuApp.swift; sourceTree = "<group>"; };
 		9D5A936929BE1B4700EF4747 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,10 +77,12 @@
 		9D78C77729C9E37C00B84A5C /* EditRecordTagDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditRecordTagDetailView.swift; sourceTree = "<group>"; };
 		9D8A5FBC29CB45790037F8F3 /* SomeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SomeClass.swift; sourceTree = "<group>"; };
 		9D8C698F29D2C1C700846ABA /* MySegmentSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySegmentSelection.swift; sourceTree = "<group>"; };
-		9D8C699229D3287B00846ABA /* StoreConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreConfiguration.storekit; sourceTree = "<group>"; };
 		9D8C699329D422BC00846ABA /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 		9D8C699529D4618B00846ABA /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		9D8C699829D485D200846ABA /* PurchaseItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseItemView.swift; sourceTree = "<group>"; };
+		9D8C699A29D48D4A00846ABA /* EntitlementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementManager.swift; sourceTree = "<group>"; };
+		9D8C699C29D5821E00846ABA /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
+		9D8C699E29D5D55600846ABA /* CostTextAndChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostTextAndChartView.swift; sourceTree = "<group>"; };
 		9DA4EB1429C3470B003DB3BF /* ICONView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICONView.swift; sourceTree = "<group>"; };
 		9DD7152029CC9B7100BBDEA0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9DD7152229CC9BDB00BBDEA0 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -140,6 +146,7 @@
 			children = (
 				9D5A936729BE1B4600EF4747 /* ZhangBuApp.swift */,
 				9D5A937029BE1B4700EF4747 /* Persistence.swift */,
+				9D8C69A029D5D7B300846ABA /* VariousView */,
 				9D8A5FC029CB48E50037F8F3 /* Widgets */,
 				9D2D08DE29C4927700E6404C /* Helper */,
 				9D2D08DD29C4925B00E6404C /* CoreData */,
@@ -148,7 +155,7 @@
 				9D8C699729D462D900846ABA /* StoreKit */,
 				9D5A939929BEC56900EF4747 /* AddDayAccountView.swift */,
 				9D5A936929BE1B4700EF4747 /* ContentView.swift */,
-				9D8C699229D3287B00846ABA /* StoreConfiguration.storekit */,
+				9D4D3FAE29E7BFDD00437776 /* StoreConfiguration.storekit */,
 				9D5A93A729C2111900EF4747 /* SettingView.swift */,
 				9D5A936B29BE1B4700EF4747 /* Assets.xcassets */,
 				9D5A93A129C086C900EF4747 /* ZhangBu.entitlements */,
@@ -179,7 +186,6 @@
 		9D8A5FBE29CB46260037F8F3 /* ListAndChart */ = {
 			isa = PBXGroup;
 			children = (
-				9DD7152529CD732600BBDEA0 /* OneDimensionalBar.swift */,
 				9D5A939F29BF532000EF4747 /* AccountsChart.swift */,
 				9D5A939B29BF1F1000EF4747 /* AccountsList.swift */,
 			);
@@ -203,10 +209,21 @@
 			isa = PBXGroup;
 			children = (
 				9D8C699329D422BC00846ABA /* PurchaseView.swift */,
+				9D8C699A29D48D4A00846ABA /* EntitlementManager.swift */,
 				9D8C699829D485D200846ABA /* PurchaseItemView.swift */,
 				9D8C699529D4618B00846ABA /* PurchaseManager.swift */,
 			);
 			path = StoreKit;
+			sourceTree = "<group>";
+		};
+		9D8C69A029D5D7B300846ABA /* VariousView */ = {
+			isa = PBXGroup;
+			children = (
+				9D8C699C29D5821E00846ABA /* CircleProgressView.swift */,
+				9D8C699E29D5D55600846ABA /* CostTextAndChartView.swift */,
+				9DD7152529CD732600BBDEA0 /* OneDimensionalBar.swift */,
+			);
+			path = VariousView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,6 +308,7 @@
 				9D2D08D929C44AB300E6404C /* DayAccount+CoreDataClass.swift in Sources */,
 				9D8C699429D422BC00846ABA /* PurchaseView.swift in Sources */,
 				9D5A939A29BEC56900EF4747 /* AddDayAccountView.swift in Sources */,
+				9D8C699F29D5D55600846ABA /* CostTextAndChartView.swift in Sources */,
 				9D78C77829C9E37C00B84A5C /* EditRecordTagDetailView.swift in Sources */,
 				9D78C76B29C8899900B84A5C /* Record+CoreDataClass.swift in Sources */,
 				9DA4EB1529C3470B003DB3BF /* ICONView.swift in Sources */,
@@ -302,6 +320,7 @@
 				9D5A93A829C2111900EF4747 /* SettingView.swift in Sources */,
 				9D78C76C29C8899900B84A5C /* Record+CoreDataProperties.swift in Sources */,
 				9D5A93A029BF532000EF4747 /* AccountsChart.swift in Sources */,
+				9D8C699D29D5821E00846ABA /* CircleProgressView.swift in Sources */,
 				9D5A936829BE1B4600EF4747 /* ZhangBuApp.swift in Sources */,
 				9D8C699929D485D200846ABA /* PurchaseItemView.swift in Sources */,
 				9D5A939829BE271800EF4747 /* PersonalInfo.swift in Sources */,
@@ -311,6 +330,7 @@
 				9D5A939629BE26C600EF4747 /* StaticProperty.swift in Sources */,
 				9D78C76E29C88C8000B84A5C /* Color+Codable.swift in Sources */,
 				9D5A937429BE1B4700EF4747 /* ZhangBu.xcdatamodeld in Sources */,
+				9D8C699B29D48D4A00846ABA /* EntitlementManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,7 +472,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ZhangBu/ZhangBu.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"ZhangBu/Preview Content\"";
 				DEVELOPMENT_TEAM = QXK2SWBXZ7;
 				ENABLE_PREVIEWS = YES;
@@ -471,7 +491,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jcwang.zhangbu.ZhangBu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
@@ -491,7 +511,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ZhangBu/ZhangBu.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"ZhangBu/Preview Content\"";
 				DEVELOPMENT_TEAM = QXK2SWBXZ7;
 				ENABLE_PREVIEWS = YES;
@@ -510,7 +530,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jcwang.zhangbu.ZhangBu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";

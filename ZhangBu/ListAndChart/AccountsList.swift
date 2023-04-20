@@ -13,7 +13,7 @@ import SwiftUI
 
 struct AccountsList: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     
     
     // 每天通知时间，Date不能直接存在UserDefaults中，所以多用了一个Double
@@ -49,27 +49,6 @@ struct AccountsList: View {
     
     // 名字，日期，DayAccount
     var processedDayAccounts: [String: [Date: DayAccount]]
-    // 年份，姓名，月份，该月份总和
-    var yearCosts: [Int: [String: [String: Double]]]
-    var weekCost: Double {
-        var weekCost = 0.0
-        
-        if let proDayAccounts = processedDayAccounts[StaticProperty.MySelfName] {
-            for (date, dayAccount) in proDayAccounts {
-                if date.isInSameWeek(as: currentSelectedDate) {
-                    weekCost += dayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +)
-                }
-            }
-        }
-        
-        return weekCost
-    }
-    
-    
-    
-    // 显示标签图，用AppStorage没有动画了，还是不加了
-//    @AppStorage(StaticProperty.USERDEFAULTS_SHOWPROPERTITY) var showTagPro = false
-    @State var showTagPro = false
     
     
     
@@ -104,63 +83,6 @@ struct AccountsList: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                switch segmentationSelection {
-                case .daySeg:
-                    if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]?[currentSelectedDate] {
-                        Text("日消费：¥\(tempDayAccount.wrappedRecords.map( {$0.price} ).reduce(0.0, +), specifier: "%.2F")").bold()
-                            .foregroundColor(.accentColor)
-                    } else {
-                        Text("日消费：¥0.00").bold()
-                            .foregroundColor(.accentColor)
-                    }
-                
-                case .weekSeg:
-                    Text("第\(currentSelectedDate.weekInMonth)周消费：¥\(weekCost, specifier: "%.2F")").bold()
-                        .foregroundColor(.accentColor)
-                case .monthSeg:
-                    let currentMonthCost = yearCosts[currentSelectedDate.year]?[StaticProperty.MySelfName]?[String(currentSelectedDate.monthInYear)] ?? 0.0
-
-                    Text("月消费：¥\(currentMonthCost, specifier: "%.2F")").bold()
-                        .foregroundColor(.accentColor)
-                case .yearSeg:
-                    let currentYearCost = yearCosts[currentSelectedDate.year] ?? [String: [String: Double]]()
-                        
-                    Text("年消费：¥\(currentYearCost[StaticProperty.MySelfName]?.values.reduce(0.0, +) ?? 0.0, specifier: "%.2F")").bold()
-                        .foregroundColor(.accentColor)
-                }
-                
-                Spacer()
-                
-                if #available(iOS 16.0, *) {
-//                    Toggle("标签图", isOn: $showTagPro.animation())
-//                        .frame(width: 120)
-//                        .foregroundColor(.accentColor)
-                    Button {
-                        withAnimation {
-                            showTagPro.toggle()
-                        }
-                    } label: {
-                        if showTagPro {
-                            Label("", systemImage: "chart.pie.fill")
-                                .font(.title2)
-                        } else {
-                            Label("", systemImage: "chart.pie")
-                                .font(.title2)
-                        }
-                    }
-                }
-            }
-            .padding([.leading], 18)
-            .padding([.trailing], 8)
-            
-            
-            if #available(iOS 16.0, *), showTagPro {
-                if showTagPro {
-                    OneDimensionalBar(currentSelectedDate: currentSelectedDate, currentSegment: segmentationSelection)
-                }
-            }
-            
             List(dayAccounts, id: \.id) { dayAccount in
                 if (segmentationSelection == .daySeg && dayAccount.wrappedDate.isInSameDay(as: currentSelectedDate)) || (segmentationSelection == .weekSeg && dayAccount.wrappedDate.isInSameWeek(as: currentSelectedDate)) || (segmentationSelection == .monthSeg && dayAccount.wrappedDate.isInSameMonth(as: currentSelectedDate)) || (segmentationSelection == .yearSeg && dayAccount.wrappedDate.isInSameYear(as: currentSelectedDate)) {
                     // 同一天的一个Section
@@ -187,8 +109,8 @@ struct AccountsList: View {
                                     Text("\(record.wrappedItem)")
                                         .font(.title3)
                                     Spacer()
-                                    Text("-¥\(record.price, specifier: "%.2F")")
-                                        .foregroundColor(.accentColor)
+                                    Text("\(record.costOrIncome ? "+" : "-")¥\(record.price, specifier: "%.2F")")
+                                        .foregroundColor(record.costOrIncome ? Color(UIColor.label) : .accentColor)
                                 }
                             }
                             .swipeActions(edge: .leading) {
@@ -223,10 +145,25 @@ struct AccountsList: View {
                                     if let tempEditRecord = editRecord, tempEditRecord.id == record.id {
                                         Label("取消修改", systemImage: "")
                                     } else {
-                                        Label("", systemImage: "pencil.line")
+                                        Label("修改", systemImage: "")
                                     }
                                 }
                                 .tint(Color.accentColor)
+                                
+                                Button {
+                                    withAnimation {
+                                        if dayAccount.wrappedDate.isInToday {
+                                            // 如果先remove，此处计算金钱的时候，可能dayAccount已经被remove了，dayAccount会位移到别的地方
+                                            let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.filter({!$0.costOrIncome}).map({$0.price}).reduce(0.0, +) - record.price)
+                                        }
+                                        
+                                        self.removeRecord(dayAccount: dayAccount, for: record)
+                                    }
+                                } label: {
+                                    Label("", systemImage: "trash")
+                                }
+                                .tint(Color.red)
+                                
                             }
                         }
                         .onDelete { offsets in
@@ -234,7 +171,7 @@ struct AccountsList: View {
                                 let _ = offsets.map { dayAccount.wrappedRecords[$0] }.forEach { record in
                                     if dayAccount.wrappedDate.isInToday {
                                         // 如果先remove，此处计算金钱的时候，可能dayAccount已经被remove了，dayAccount会位移到别的地方
-                                        let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +) - record.price)
+                                        let _ = NotificationHelper.editNotification(savedDailyReportTime: 09, todayPrice: dayAccount.wrappedRecords.filter({!$0.costOrIncome}).map({$0.price}).reduce(0.0, +) - record.price)
                                     }
                                     
                                     self.removeRecord(dayAccount: dayAccount, for: record)

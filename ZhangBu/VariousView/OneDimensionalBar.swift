@@ -41,6 +41,10 @@ struct OneDimensionalBar: View {
         for tag in tags {
             var tagCost = TagCost(color: tag.wrappedColor, category: tag.wrappedTagName, price: 0.0)
             for record in tag.wrappedRecords {
+                guard record.costOrIncome == false else {
+                    continue
+                }
+                
                 if let dayAccount = record.belongDayAccount {
                     switch currentSegment {
                     case .daySeg:
@@ -140,7 +144,7 @@ struct OneDimensionalBar: View {
                 #else
                 .background(Color(.systemFill))
                 #endif
-                .cornerRadius(8)
+                .cornerRadius(18)
         }
         .chartXAxis(.hidden)
         .chartYScale(range: .plotDimension(endPadding: -8))

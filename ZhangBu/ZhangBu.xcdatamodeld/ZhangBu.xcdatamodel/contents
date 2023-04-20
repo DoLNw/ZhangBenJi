@@ -9,7 +9,11 @@
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
+    <entity name="MyCustom" representedClassName="MyCustom" syncable="YES">
+        <attribute name="customBool" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    </entity>
     <entity name="Record" representedClassName="Record" syncable="YES">
+        <attribute name="costOrIncome" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="item" optional="YES" attributeType="String"/>

@@ -21,5 +21,14 @@ class StaticProperty {
     static let USERFEFAULTS_SegmentationSelection = "SegmentationSelection"
     
     static let USERDEFAULTS_SHOWPROPERTITY = "showPropertity"
+    
+    
+    
+    
+    // 应用内购买
+    static let USERDEFAULT_Various_Charts = "various_charts"
+    static let USERDEFAULT_Multi_Sharing = "Multi_Sharing"
+    static let USERDEFAULT_Has_Various_Charts = "hasVariousChartsFunc"
+    static let USERDEFAULT_Has_Multi_Sharing = "hasMultiSharingFunc"
 }
 

@@ -9,6 +9,7 @@ import SwiftUI
 import StoreKit
 
 struct PurchaseItemView: View {
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
     var product: Product
     
@@ -27,21 +28,21 @@ struct PurchaseItemView: View {
                     }
                 }
             } label: {
-                if product.id == "various_charts" {
-                    Text("\(purchaseManager.hasVariousChartsFunc ? "已购买" : "\(product.displayPrice)")")
+                if product.id == StaticProperty.USERDEFAULT_Various_Charts {
+                    Text("\(entitlementManager.hasVariousChartsFunc ? "已购买" : "\(product.displayPrice)")")
                         .foregroundColor(.white)
                         .padding(10)
                         .background(Color.accentColor)
                         .clipShape(Capsule())
-                } else if product.id == "Multi_Sharing" {
-                    Text("\(purchaseManager.hasMultiSharingFunc ? "已购买" : "\(product.displayPrice)")")
+                } else if product.id == StaticProperty.USERDEFAULT_Multi_Sharing {
+                    Text("\(entitlementManager.hasMultiSharingFunc ? "已购买" : "\(product.displayPrice)")")
                         .foregroundColor(.white)
                         .padding(10)
                         .background(Color.accentColor)
                         .clipShape(Capsule())
                 }
             }
-            .disabled((product.id == "various_charts" && purchaseManager.hasVariousChartsFunc) || (product.id == "Multi_Sharing" && purchaseManager.hasMultiSharingFunc))
+            .disabled((product.id == StaticProperty.USERDEFAULT_Various_Charts && entitlementManager.hasVariousChartsFunc) || (product.id == StaticProperty.USERDEFAULT_Multi_Sharing && entitlementManager.hasMultiSharingFunc))
         }
     }
 }

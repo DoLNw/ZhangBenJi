@@ -10,6 +10,7 @@ import LocalAuthentication
 import UserNotifications
 
 struct SettingView: View {
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
     
     
@@ -98,25 +99,12 @@ struct SettingView: View {
                     }
                 }
                 
-                PurchaseView()
-                    .environmentObject(purchaseManager)
-                
-                // TODO
-    //            Toggle("使用iCloud同步", isOn: $shouldLock)
-    //                .onChange(of: shouldLock) { newValue in
-    //                    if newValue {
-    //                        authenticate()
-    //                    }
-    //                }
-                
-                
-    //            Toggle("共享", isOn: $shouldLock)
-    //                .onChange(of: shouldLock) { newValue in
-    //                    if newValue {
-    //                        authenticate()
-    //                    }
-    //                }
                 Spacer()
+                
+                PurchaseView()
+                
+                Spacer()
+                
                 VStack(alignment: .leading) {
                     Text("开发人员：王嘉诚")
                         .font(.caption)

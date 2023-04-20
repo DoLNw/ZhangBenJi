@@ -21,6 +21,7 @@ extension DayAccount {
     @NSManaged public var name: String?
     @NSManaged public var records: NSSet?
     
+    
     public var wrappedID: UUID {
         id ?? UUID()
     }

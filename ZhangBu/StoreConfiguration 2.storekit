@@ -1,9 +1,24 @@
 {
-  "identifier" : "90DA8037",
+  "identifier" : "C2E647BF",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6446895662",
+      "localizations" : [
+        {
+          "description" : "可以将自己的账本共享给他人",
+          "displayName" : "多人共享",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "Multi_Sharing",
+      "referenceName" : "Multi Sharing",
+      "type" : "NonConsumable"
+    },
     {
       "displayPrice" : "0.99",
       "familyShareable" : false,
@@ -23,7 +38,7 @@
   "settings" : {
     "_applicationInternalID" : "6446364909",
     "_developerTeamID" : "QXK2SWBXZ7",
-    "_lastSynchronizedDate" : 703053794.56278098
+    "_lastSynchronizedDate" : 701704321.35205805
   },
   "subscriptionGroups" : [
 

@@ -19,6 +19,7 @@ struct ContentView: View {
     
     
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
     
     
@@ -91,17 +92,19 @@ struct ContentView: View {
                                 
                                 MySegmentSelection(segmentationSelection: $segmentationSelection)
                                 
+                                CostTextAndChartView(currentSelectedDate: currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                
                                 if #available(iOS 16, *) {
                                     switch chartOrList {
                                     case .accountsList:
-                                        AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                        AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts)
                                             .environment(\.managedObjectContext, viewContext)
                                     case .accountsChart:
                                         AccountsChart(segmentationSelection: segmentationSelection, currentSelectedDate: currentSelectedDate, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
                                             .environment(\.managedObjectContext, viewContext)
                                     }
                                 } else {
-                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts, yearCosts: yearCosts)
+                                    AccountsList(focusedField: _focusedField, editAccount: $editAccount, editRecord: $editRecord, amount: $amount, item: $item, currentRecordTag: $currentRecordTag, currentSelectedDate: $currentSelectedDate, segmentationSelection: segmentationSelection, processedDayAccounts: processedDayAccounts)
                                         .environment(\.managedObjectContext, viewContext)
                                 }
                                 
@@ -131,11 +134,9 @@ struct ContentView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([.medium, .large])
 //                                .presentationDetents([.fraction(0.2), .height(100)])
-                                .environmentObject(purchaseManager)
                         } else {
                             SettingView(isUnlocked: $isUnlocked, todayPrice: todayPrice)
                                 .environment(\.managedObjectContext, viewContext)
-                                .environmentObject(purchaseManager)
                         }
                         
                     })
@@ -203,7 +204,6 @@ struct ContentView: View {
             
             // 首先检查，如果没有标签，设置几个默认的标签
             if tags.count == 0 {
-                print("aaaaaaa")
                 let tag1 = RecordTag(context: viewContext)
                 tag1.createdDate = Date.now.addingTimeInterval(-500)
                 print(Date.now.addingTimeInterval(-500).description)
@@ -257,21 +257,24 @@ extension ContentView {
     
     // 给年、月Segmentation用
     // 年份，姓名，月份，该月份总和
-    var yearCosts: [Int: [String: [String: Double]]] {
-        var yearCosts: [Int: [String: [String: Double]]] = [:]
+    var yearCosts: [Int: [String: [String: MonthCostAndIncome]]] {
+        var yearCosts: [Int: [String: [String: MonthCostAndIncome]]] = [:]
         
         for dayAccount in dayAccounts {
             if yearCosts[dayAccount.wrappedDate.year] == nil {
-                yearCosts[dayAccount.wrappedDate.year] = [String: [String: Double]]()
+                yearCosts[dayAccount.wrappedDate.year] = [String: [String: MonthCostAndIncome]]()
             }
             if yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName] == nil {
-                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName] = [String: Double]()
+                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName] = [String: MonthCostAndIncome]()
             }
             
             if yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)] == nil {
-                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)] = dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)] = MonthCostAndIncome(cost: dayAccount.wrappedRecords.filter({!$0.costOrIncome}).map({$0.price}).reduce(0.0, +), income: dayAccount.wrappedRecords.filter({$0.costOrIncome}).map({$0.price}).reduce(0.0, +))
             } else {
-                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)] =  yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]! + dayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+//                var monthCostAndIncome = yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]!
+                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]!.cost =  yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]!.cost + dayAccount.wrappedRecords.filter({!$0.costOrIncome}).map({$0.price}).reduce(0.0, +)
+                
+                yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]!.income =  yearCosts[dayAccount.wrappedDate.year]![dayAccount.wrappedName]![String(dayAccount.wrappedDate.monthInYear)]!.income + dayAccount.wrappedRecords.filter({$0.costOrIncome}).map({$0.price}).reduce(0.0, +)
             }
         }
         
@@ -281,7 +284,7 @@ extension ContentView {
     var todayPrice: Double {
         if let _ = processedDayAccounts[StaticProperty.MySelfName] {
             if let tempDayAccount = processedDayAccounts[StaticProperty.MySelfName]![currentSelectedDate] {
-                return tempDayAccount.wrappedRecords.map({$0.price}).reduce(0.0, +)
+                return tempDayAccount.wrappedRecords.filter({!$0.costOrIncome}).map({$0.price}).reduce(0.0, +)
             }
         }
         

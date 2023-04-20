@@ -140,8 +140,44 @@ struct SpirographView: View {
 }
 
 
-struct SpirographView_Previews: PreviewProvider {
-    static var previews: some View {
-        SpirographView()
-    }
-}
+//struct SpirographView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MySinVIew()
+//    }
+//}
+//
+//
+//struct MySin: Shape {
+//    let a: CGFloat
+//    let b: CGFloat
+//
+//    func path(in rect: CGRect) -> Path {
+//        var path = Path()
+//
+//        for number in stride(from: 0, to: 400, by: 0.01) {
+//            let y = 500 * sin(a * number + b)
+//            if number == 0 {
+//                path.move(to: CGPoint(x: number, y: y))
+//            } else {
+//                path.addLine(to: CGPoint(x: number, y: y))
+//            }
+//        }
+//
+//        return path
+//    }
+//}
+//
+//struct MySinVIew: View {
+//    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+//
+//    @State var a: CGFloat = 0.05
+//    @State var b: CGFloat = 3.2
+//
+//    var body: some View {
+//        MySin(a: a, b: b)
+//            .stroke(Color(hue: 0.2, saturation: 1, brightness: 1), lineWidth: 2)
+//            .onReceive(timer) { time in
+//                b += 0.01
+//            }
+//    }
+//}

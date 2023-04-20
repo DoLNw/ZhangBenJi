@@ -9,13 +9,16 @@ import SwiftUI
 import StoreKit
 
 struct PurchaseView: View {
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     @EnvironmentObject private var purchaseManager: PurchaseManager
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack {
             // 展示出所有的购买项目
             ForEach(purchaseManager.products) { product in
                 PurchaseItemView(product: product)
+                
+//                Spacer()
             }
             
             HStack {
@@ -32,6 +35,7 @@ struct PurchaseView: View {
                     }
                 } label: {
                     Text("恢复购买")
+                        .padding(10)
                 }
             }
             

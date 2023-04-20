@@ -8,6 +8,14 @@
 import Foundation
 import SwiftUI
 
+
+
+extension Color {
+    static let incomeColor = Color("IncomeColor")
+}
+
+
+
 // 此处使用的是，Color能够Core Data中通过String实现存储。
 
 

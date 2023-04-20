@@ -13,7 +13,8 @@ import StoreKit
 
 @MainActor
 class PurchaseManager: ObservableObject {
-    private let productIds = ["various_charts", "Multi_Sharing"]
+    // 第一阶段，查找当前App总共多少个购买项目
+    private let productIds = [StaticProperty.USERDEFAULT_Various_Charts, StaticProperty.USERDEFAULT_Multi_Sharing]
     
     @Published
     private(set) var products: [Product] = []   // 这个表示当前的App有多少个购买的项目
@@ -54,17 +55,19 @@ class PurchaseManager: ObservableObject {
     
     
     
+    // 第二阶段，三次调用更新
     // 上面的是调用系统的购买方法，然后下面的就是拿到购买的东西的变量
     // 这个表示已经购买的的项目的ID
     @Published private(set) var purchasedProductIDs = Set<String>()
     
-    var hasVariousChartsFunc: Bool {
-        return purchasedProductIDs.contains("various_charts")
-    }
+//    var hasVariousChartsFunc: Bool {
+//        return purchasedProductIDs.contains(StaticProperty.USERDEFAULT_Various_Charts)
+//    }
+//
+//    var hasMultiSharingFunc: Bool {
+//        return purchasedProductIDs.contains(StaticProperty.USERDEFAULT_Multi_Sharing)
+//    }
     
-    var hasMultiSharingFunc: Bool {
-        return purchasedProductIDs.contains("Multi_Sharing")
-    }
     
     // 1、当App运行的时候更新当前购买了多少项目。所以在ZhangBuApp里面有代码。
     // 2、然后用户购买了之后，重新调用该方法，更新
@@ -81,16 +84,19 @@ class PurchaseManager: ObservableObject {
                 self.purchasedProductIDs.remove(transaction.productID)
             }
         }
+        
+        self.entitlementManager.hasVariousChartsFunc = purchasedProductIDs.contains(StaticProperty.USERDEFAULT_Various_Charts)
+        self.entitlementManager.hasMultiSharingFunc = purchasedProductIDs.contains(StaticProperty.USERDEFAULT_Multi_Sharing)
     }
     
     
     
-    // 当购买的项目发生在别的设备、或者订阅的到期了等等，需要增加监听
+    // 第三阶段，当购买的项目发生在别的设备、或者订阅的到期了等等，需要增加监听
     private var updates: Task<Void, Never>? = nil
     
-    init() {
-        updates = observeTransactionUpdates()
-    }
+//    init() {
+//        updates = observeTransactionUpdates()
+//    }
     
     deinit {
         updates?.cancel()
@@ -102,6 +108,17 @@ class PurchaseManager: ObservableObject {
                 await self.updatePurchasedProducts()
             }
         }
+    }
+    
+    
+    
+    
+    
+    // 第四阶段，Extension中访问购买，然后这个参数里面的信息，在第二阶段的更新方法里面更新了
+    private let entitlementManager: EntitlementManager
+    
+    init(entitlementManager: EntitlementManager) {
+        self.entitlementManager = entitlementManager
     }
 }
 

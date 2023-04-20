@@ -46,3 +46,8 @@ enum ShowingView: String, Codable, CaseIterable {
     }
 }
 
+struct MonthCostAndIncome {
+    var cost: Double
+    var income: Double
+}
+

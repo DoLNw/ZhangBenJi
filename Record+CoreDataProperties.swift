@@ -25,6 +25,7 @@ extension Record {
     @NSManaged public var price: Double
     @NSManaged public var belongDayAccount: DayAccount?
     @NSManaged public var belongTag: RecordTag?
+    @NSManaged public var costOrIncome: Bool   // 默认是false，我们设定消费cost是false
     
     public var wrappedcreateDate: Date {
         createDate ?? Date()
@@ -37,6 +38,8 @@ extension Record {
     public var wrappedItem: String {
         item ?? ""
     }
+    
+    
 }
 
 extension Record : Identifiable {
